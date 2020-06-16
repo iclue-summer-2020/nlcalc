@@ -10,7 +10,7 @@ except ImportError:
 from pybind11_cmake import CMakeExtension, CMakeBuild
 
 setup(
-    name='iclue',
+    name='nlcalc',
     version='0.0.1',
     author='ICLUE @ UIUC',
     author_email='',

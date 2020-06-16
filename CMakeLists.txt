@@ -39,15 +39,6 @@ elseif(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "--coverage")
 endif()
 
-# Docs only available if this is the main app
-find_package(Doxygen)
-if(Doxygen_FOUND)
-    add_subdirectory(docs)
-else()
-    message(STATUS "Doxygen not found, not building docs")
-endif()
-
-
 # FetchContent added in CMake 3.11, downloads during the configure step
 include(FetchContent)
 
@@ -55,18 +46,6 @@ include(FetchContent)
 if(${CMAKE_VERSION} VERSION_LESS 3.14)
     include(cmake/add_FetchContent_MakeAvailable.cmake)
 endif()
-
-# The library code is here.
-add_subdirectory(src)
-
-# The executable code is here.
-add_subdirectory(apps)
-
-# The tests are here.
-add_subdirectory(tests)
-
-# The main data files are here.
-# add_subdirectory(data)
 
 # Testing library. Header-only.
 FetchContent_Declare(
@@ -123,5 +102,13 @@ endif()
 FetchContent_GetProperties(pybind)
 if(NOT pybind_POPULATED)
     FetchContent_Populate(pybind)
+    message("hi" ${pybind_SOURCE_DIR})
     add_subdirectory(${pybind_SOURCE_DIR} ${pybind_BINARY_DIR})
 endif()
+
+# The library code is here.
+add_subdirectory(src)
+
+# The tests are here.
+add_subdirectory(tests)
+
