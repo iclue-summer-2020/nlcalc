@@ -18,7 +18,7 @@ pybind11_add_module(nlcalc ${SOURCE_LIST} ${HEADER_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(nlcalc PUBLIC ../include)
 
-target_link_libraries(nlcalc PRIVATE nlohmann_json)
+target_link_libraries(nlcalc PRIVATE nlohmann_json pybind11)
 
 # All users of this library will need at least C++11
 target_compile_features(nlcalc PUBLIC cxx_std_11)

@@ -11,9 +11,9 @@ cmake_minimum_required(VERSION 2.8.12)
 project(NLCalc)
 # Note: The lines below allows a pip install pybind11 to be found by cmake.
 #       Do not remove.
-# execute_process(COMMAND python3.6 -c
-#                "import pybind11_cmake; print(pybind11_cmake.__path__[0])"
-#                OUTPUT_VARIABLE pybind11_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND python3.6 -c
+               "import pybind11_cmake; print(pybind11_cmake.__path__[0])"
+               OUTPUT_VARIABLE pybind11_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
 
@@ -26,6 +26,10 @@ project(NLCalc)
 set(CMAKE_BUILD_TYPE Debug)
 # Let's ensure -std=c++xx instead of -std=g++xx
 set(CMAKE_CXX_EXTENSIONS OFF)
+# Make the output folder `cmake-build-debug`.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY cmake-build-debug/)
+# Set the correct python version.
+find_package(Python3 COMPONENTS Interpreter Development)
 # Let's nicely support folders in IDE's
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -102,7 +106,6 @@ endif()
 FetchContent_GetProperties(pybind)
 if(NOT pybind_POPULATED)
     FetchContent_Populate(pybind)
-    message("hi" ${pybind_SOURCE_DIR})
     add_subdirectory(${pybind_SOURCE_DIR} ${pybind_BINARY_DIR})
 endif()
 
