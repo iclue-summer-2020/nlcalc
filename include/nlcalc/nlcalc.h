@@ -16,10 +16,12 @@ namespace nlcalc {
 // Converts a C++ vector into a C vector defined by lrcalc.
 vector* to_vector(const std::vector<int>&);
 
+// Computes the Littlewood-Richardson coefficient.
 int64_t lrcoef(
     const std::vector<int>& outer,
     const std::vector<int>& inner1,
     const std::vector<int>& inner2);
+
 }  // namespace nlcalc
 
 #endif  // NLCALC_H_

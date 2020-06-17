@@ -33,7 +33,7 @@ int64_t lrcoef(
   vector* i1 = to_vector(inner1);
   vector* i2 = to_vector(inner2);
 
-  int64_t result = lrcoef(o, i1, i2);
+  const int64_t result = lrcoef(o, i1, i2);
 
   v_free(o);
   v_free(i1);
