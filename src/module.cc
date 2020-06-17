@@ -1,6 +1,7 @@
 // Copyright 2020 ICLUE @ UIUC. All rights reserved.
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <nlcalc/nlcalc.h>
 
 namespace py = pybind11;

@@ -63,19 +63,6 @@ FetchContent_Declare(
     GIT_TAG        v2.11.1
 )
 
-# Command-line parsing library
-FetchContent_Declare(
-    gflags
-    GIT_REPOSITORY https://github.com/gflags/gflags.git
-    GIT_TAG        v2.2.2
-)
-
-# JSON Library. Header-only.
-FetchContent_Declare(
-    nlohmann_json
-    URL https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip
-)
-
 # Pybind.
 FetchContent_Declare(
     pybind
@@ -99,21 +86,6 @@ if(NOT catch2_POPULATED)
     target_include_directories(catch2 INTERFACE ${catch2_SOURCE_DIR}/single_include)
 endif()
 
-# Adds gflags::gflags
-FetchContent_GetProperties(gflags)
-if(NOT gflags_POPULATED)
-    FetchContent_Populate(gflags)
-    add_subdirectory(${gflags_SOURCE_DIR} ${gflags_BINARY_DIR})
-endif()
-
-# Adds nlohmann_json library.
-FetchContent_GetProperties(nlohmann_json)
-if(NOT nlohmann_json_POPULATED)
-    FetchContent_Populate(nlohmann_json)
-    add_library(nlohmann_json INTERFACE)
-    target_include_directories(nlohmann_json INTERFACE ${nlohmann_json_SOURCE_DIR}/single_include)
-endif()
-
 # Adds pybind::pybind11
 FetchContent_GetProperties(pybind)
 if(NOT pybind_POPULATED)
@@ -121,7 +93,7 @@ if(NOT pybind_POPULATED)
     add_subdirectory(${pybind_SOURCE_DIR} ${pybind_BINARY_DIR})
 endif()
 
-# Adds gflags::gflags
+# Adds lrcalc
 FetchContent_GetProperties(lrcalc)
 if(NOT lrcalc_POPULATED)
     FetchContent_Populate(lrcalc)
