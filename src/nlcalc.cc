@@ -1,36 +1,27 @@
 // Copyright 2020 [Your Name]. All rights reserved.
-#include <pybind11/pybind11.h>
 
-int add(int i, int j) {
-  return i + j;
+#include <vector>
+
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+extern "C" {
+#include <lrcalc/vector.h>
 }
+
+#include <nlcalc/nlcalc.h>
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(nlcalc, m) {
-m.doc() = R"pbdoc(
-        Pybind11 example plugin
-        -----------------------
-        .. currentmodule:: cmake_example
-        .. autosummary::
-           :toctree: _generate
-           add
-           subtract
-    )pbdoc";
+namespace nlcalc {
 
-m.def("add", &add, R"pbdoc(
-        Add two numbers
-        Some other explanation about the add function.
-    )pbdoc");
-
-m.def("subtract", [](int i, int j) { return i - j; }, R"pbdoc(
-        Subtract two numbers
-        Some other explanation about the subtract function.
-    )pbdoc");
-
-#ifdef VERSION_INFO
-m.attr("__version__") = VERSION_INFO;
-#else
-m.attr("__version__") = "dev";
-#endif
+vector* to_vector(const std::vector<int>& vec) {
+  vector* v = v_new(static_cast<int>(vec.size()));
+  for (size_t i = 0; i < vec.size(); ++i) {
+    v->array[i] = vec[i];
+  }
+  return v;
 }
+
+}  // namespace nlcalc
+

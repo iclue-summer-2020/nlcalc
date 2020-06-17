@@ -3,10 +3,24 @@
 #define CATCH_CONFIG_MAIN
 
 #include <catch2/catch.hpp>
-#include <bayes/classifier.h>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
+extern "C" {
+#include <lrcalc/vector.h>
+}
+#include <nlcalc/nlcalc.h>
 
-// TODO(you): Remove this unnecessary test case.
-TEST_CASE("Sanity Check", "[addition]") {
-  REQUIRE(1 + 1 == 2);
+namespace py = pybind11;
+
+TEST_CASE("Create a vector from an iterable", "[iterable_to_vector]") {
+  const std::vector<int> vec = {1, 2, 3, 4};
+  vector* v = nlcalc::to_vector(vec);
+
+  REQUIRE(v->length == 4);
+  for (size_t i = 0; i < v->length; i++) {
+    REQUIRE(v->array[i] == vec[i]);
+  }
+
+  v_free(v);
 }

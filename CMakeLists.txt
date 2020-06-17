@@ -30,6 +30,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY cmake-build-debug/)
 # Set the correct python version.
 find_package(Python3 COMPONENTS Interpreter Development)
+if(Python3_FOUND)
+    message("python3 found" ${Python3_STDLIB})
+else()
+    message("python3 not found :(")
+endif()
 # Let's nicely support folders in IDE's
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -78,6 +83,13 @@ FetchContent_Declare(
     GIT_TAG        v2.5.0
 )
 
+# LRCalc
+FetchContent_Declare(
+    lrcalc
+    GIT_REPOSITORY https://github.com/iclue-summer-2020/lrcalc.git
+    GIT_TAG        master
+)
+
 # Adds catch2 library.
 FetchContent_GetProperties(catch2)
 if(NOT catch2_POPULATED)
@@ -107,6 +119,13 @@ FetchContent_GetProperties(pybind)
 if(NOT pybind_POPULATED)
     FetchContent_Populate(pybind)
     add_subdirectory(${pybind_SOURCE_DIR} ${pybind_BINARY_DIR})
+endif()
+
+# Adds gflags::gflags
+FetchContent_GetProperties(lrcalc)
+if(NOT lrcalc_POPULATED)
+    FetchContent_Populate(lrcalc)
+    add_subdirectory(${lrcalc_SOURCE_DIR} ${lrcalc_BINARY_DIR})
 endif()
 
 # The library code is here.

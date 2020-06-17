@@ -12,13 +12,17 @@ file(GLOB SOURCE_LIST CONFIGURE_DEPENDS
         "${NLCalc_SOURCE_DIR}/src/*.cc"
         "${NLCalc_SOURCE_DIR}/src/*.cpp")
 
-# Make an automatic library - will be static or dynamic based on user setting
-pybind11_add_module(nlcalc ${SOURCE_LIST} ${HEADER_LIST})
+file(GLOB MODULE_FILES CONFIGURE_DEPENDS
+        "${NLCalc_SOURCE_DIR}/src/module.cc")
+
+list(REMOVE_ITEM SOURCE_LIST ${MODULE_FILES})
+
+add_library(nlcalc ${SOURCE_LIST} ${HEADER_LIST})
 
 # We need this directory, and users of our library will need it too
-target_include_directories(nlcalc PUBLIC ../include)
+target_include_directories(nlcalc PUBLIC "${NLCalc_SOURCE_DIR}/include/")
 
-target_link_libraries(nlcalc PRIVATE nlohmann_json pybind11)
+target_link_libraries(nlcalc PRIVATE python3.6m pybind11 lrcalc)
 
 # All users of this library will need at least C++11
 target_compile_features(nlcalc PUBLIC cxx_std_11)
@@ -38,8 +42,42 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
             -pedantic
             -pedantic-errors)
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-    target_compile_options(nlcalc PRIVATE
-            /W3)
+    target_compile_options(nlcalc PRIVATE /W3)
+endif ()
+
+
+
+#############################
+# Create the pybind module. #
+#############################
+
+# Make an automatic library - will be static or dynamic based on user setting
+pybind11_add_module(nlcalc-module ${MODULE_FILES})
+
+# We need this directory, and users of our library will need it too
+# target_include_directories(nlcalc-module PUBLIC ../include)
+
+target_link_libraries(nlcalc-module PRIVATE nlcalc)
+
+# All users of this library will need at least C++11
+target_compile_features(nlcalc-module PUBLIC cxx_std_11)
+
+# Cross-platform compiler lints
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
+        OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    target_compile_options(nlcalc-module PRIVATE
+            -Wall
+            -Wextra
+            -Wswitch
+            -Wconversion
+            -Wparentheses
+            -Wfloat-equal
+            -Wzero-as-null-pointer-constant
+            -Wpedantic
+            -pedantic
+            -pedantic-errors)
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+    target_compile_options(nlcalc-module PRIVATE /W3)
 endif ()
 
 # IDEs should put the headers in a nice place
