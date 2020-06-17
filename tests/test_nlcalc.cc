@@ -24,3 +24,18 @@ TEST_CASE("Create a vector from an iterable", "[iterable_to_vector]") {
 
   v_free(v);
 }
+
+TEST_CASE("Littlewood-Richardson coefficient", "[lrcoef]") {
+  SECTION("Test 1") {
+    const int64_t lr = nlcalc::lrcoef({3, 2, 1}, {2, 1}, {2, 1});
+    REQUIRE(lr == 2);
+  }
+  SECTION("Test 2") {
+    const int64_t lr = nlcalc::lrcoef({3, 3}, {2, 1}, {2, 1});
+    REQUIRE(lr == 1);
+  }
+  SECTION("Test 3") {
+    const int64_t lr = nlcalc::lrcoef({2, 1, 1, 1, 1}, {2, 1}, {2, 1});
+    REQUIRE(lr == 0);
+  }
+}

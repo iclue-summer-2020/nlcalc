@@ -22,7 +22,7 @@ add_library(nlcalc ${SOURCE_LIST} ${HEADER_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(nlcalc PUBLIC "${NLCalc_SOURCE_DIR}/include/")
 
-target_link_libraries(nlcalc PRIVATE python3.6m pybind11 lrcalc)
+target_link_libraries(nlcalc PUBLIC lrcalc PRIVATE python3.6m pybind11)
 
 # All users of this library will need at least C++11
 target_compile_features(nlcalc PUBLIC cxx_std_11)
@@ -44,6 +44,9 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
     target_compile_options(nlcalc PRIVATE /W3)
 endif ()
+
+# Enable fPIC.
+set_property(TARGET nlcalc PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 
 
@@ -79,6 +82,8 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
     target_compile_options(nlcalc-module PRIVATE /W3)
 endif ()
+
+set_property(TARGET nlcalc-module PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # IDEs should put the headers in a nice place
 source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})
