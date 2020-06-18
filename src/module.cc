@@ -31,7 +31,7 @@ PYBIND11_MODULE(nlnum, m) {
             Some other explanation about the subtract function.
         )pbdoc");
 
-  m.def("nlcoef", &nlnum::nlcoef, R"pbdoc(
+  m.def("nlcoef_slow", &nlnum::nlcoef_slow, R"pbdoc(
     Compute a single Newell-Littlewood coefficient.
     INPUT:
     - ``mu`` -- a partition (weakly decreasing list of non-negative integers).
@@ -39,7 +39,7 @@ PYBIND11_MODULE(nlnum, m) {
     - ``lambda`` -- a partition.
     EXAMPLES::
         python: from nlnum import nlcoef
-        python: nlcoef([2,1], [2,1], [4, 2])
+        python: nlcoef_slow([2,1], [2,1], [4, 2])
         1
   )pbdoc");
 

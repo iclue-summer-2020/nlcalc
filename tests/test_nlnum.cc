@@ -40,7 +40,17 @@ TEST_CASE("Littlewood-Richardson coefficient", "[lrcoef]") {
   }
 }
 
-TEST_CASE("Newell-Littlewood number", "[nlcoef]") {
-  const int64_t nl = nlnum::nlcoef({2, 1}, {2, 1}, {4, 2});
-  REQUIRE(nl == 1);
+TEST_CASE("Newell-Littlewood number", "[nlcoef_slow]") {
+  SECTION("Test 1") {
+    const int64_t nl = nlnum::nlcoef_slow({2, 1}, {2, 1}, {4, 2});
+    REQUIRE(nl == 1);
+  }
+  SECTION("Test 2") {
+    const int64_t nl = nlnum::nlcoef_slow({8, 4, 4}, {8, 4, 4}, {8, 4, 4});
+    REQUIRE(nl == 141);
+  }
+  SECTION("Test 3") {
+    const int64_t nl = nlnum::nlcoef_slow({12, 6, 6}, {12, 6, 6}, {12, 6, 6});
+    REQUIRE(nl == 676);
+  }
 }

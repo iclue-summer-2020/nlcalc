@@ -35,7 +35,7 @@ int64_t lrcoef(
     const std::vector<int>& inner2);
 
 // Computes the Newell-Littlewood coefficient
-int64_t nlcoef(
+int64_t nlcoef_slow(
     const std::vector<int>& mu,
     const std::vector<int>& nu,
     const std::vector<int>& lambda);

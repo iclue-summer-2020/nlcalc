@@ -73,11 +73,10 @@ const std::vector<int> Intersection(
 }
 
 // Evaluates one term in the sum.
-int64_t nlcoef_helper(
-    const std::vector<int>& alpha,
-    const std::vector<int>& mu,
-    const std::vector<int>& nu,
-    const std::vector<int>& lambda) {
+int64_t nlcoef_slow_helper(const std::vector<int>& alpha,
+                           const std::vector<int>& mu,
+                           const std::vector<int>& nu,
+                           const std::vector<int>& lambda) {
   int64_t nl_im = 0;
 
   vector* aa = to_vector(alpha);
@@ -121,10 +120,8 @@ int64_t nlcoef_helper(
   return nl_im;
 }
 
-int64_t nlcoef(
-    const std::vector<int>& mu,
-    const std::vector<int>& nu,
-    const std::vector<int>& lambda) {
+int64_t nlcoef_slow(const std::vector<int>& mu, const std::vector<int>& nu,
+                    const std::vector<int>& lambda) {
   int64_t nl = 0;
   // Step 1: Compute the intersection of mu and nu.
   const std::vector<int> limit = Intersection(mu, nu);
@@ -133,7 +130,7 @@ int64_t nlcoef(
   std::vector<int> alpha(limit.size());
   int level = static_cast<int>(alpha.size())-1;
 
-  nl += nlcoef_helper(alpha, mu, nu, lambda);
+  nl += nlcoef_slow_helper(alpha, mu, nu, lambda);
   while (true) {
     const int lneighbor = level == 0 ? INT_MAX : alpha[level-1];
     if (level >= 0 && alpha[level] >= std::min(lneighbor, limit[level])) {
@@ -142,7 +139,7 @@ int64_t nlcoef(
     } else {
       ++alpha[level];
       level = static_cast<int>(alpha.size()) - 1;
-      nl += nlcoef_helper(alpha, mu, nu, lambda);
+      nl += nlcoef_slow_helper(alpha, mu, nu, lambda);
     }
   }
 
