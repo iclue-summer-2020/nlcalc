@@ -3,12 +3,12 @@ if (${CMAKE_VERSION} VERSION_LESS 3.11)
     cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif ()
 
-project(NLCalc
+project(NLNum
         VERSION 1.0
-        DESCRIPTION "Classifying hand-written digits using Naive Bayes classification"
+        DESCRIPTION "Calculate Newell-Littlewood Numbers"
         LANGUAGES CXX)
 cmake_minimum_required(VERSION 2.8.12)
-project(NLCalc)
+project(NLNum)
 # Note: The lines below allows a pip install pybind11 to be found by cmake.
 #       Do not remove.
 execute_process(COMMAND python3.6 -c

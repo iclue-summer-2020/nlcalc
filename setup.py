@@ -10,14 +10,14 @@ except ImportError:
 from pybind11_cmake import CMakeExtension, CMakeBuild
 
 setup(
-    name='nlcalc',
+    name='nlnum',
     version='0.0.1',
     author='ICLUE @ UIUC',
     author_email='',
     description='',
     long_description='',
     setup_requires=['pybind11_cmake'],
-    ext_modules=[CMakeExtension('nlcalc')],
+    ext_modules=[CMakeExtension('nlnum')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )

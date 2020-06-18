@@ -143,4 +143,4 @@ _deps
 
 # End of https://www.gitignore.io/api/c++,cmake,clion
 dist/
-nlcalc.egg-info/
+nlnum.egg-info/

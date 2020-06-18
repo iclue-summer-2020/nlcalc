@@ -1,7 +1,7 @@
 // Copyright (c) 2020 [Your Name]. All rights reserved.
 
-#ifndef NLCALC_H_
-#define NLCALC_H_
+#ifndef nlnum_H_
+#define nlnum_H_
 
 #include <cstdint>
 #include <map>
@@ -18,7 +18,7 @@ extern "C" {
 
 namespace py = pybind11;
 
-namespace nlcalc {
+namespace nlnum {
 // Converts a C++ vector into a C vector defined by lrcalc.
 vector* to_vector(const std::vector<int>&);
 
@@ -40,6 +40,6 @@ int64_t nlcoef(
     const std::vector<int>& nu,
     const std::vector<int>& lambda);
 
-}  // namespace nlcalc
+}  // namespace nlnum
 
-#endif  // NLCALC_H_
+#endif  // nlnum_H_

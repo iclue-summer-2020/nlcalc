@@ -14,11 +14,11 @@ extern "C" {
 #include <lrcalc/vector.h>
 }
 
-#include <nlcalc/nlcalc.h>
+#include <nlnum/nlnum.h>
 
 namespace py = pybind11;
 
-namespace nlcalc {
+namespace nlnum {
 
 vector* to_vector(const std::vector<int>& vec) {
   vector* v = v_new(static_cast<int>(vec.size()));
@@ -167,5 +167,5 @@ bool to_map(hashtab* ht, std::map<std::vector<int>, int>* m) {
   return true;
 }
 
-}  // namespace nlcalc
+}  // namespace nlnum
 

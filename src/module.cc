@@ -2,7 +2,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <nlcalc/nlcalc.h>
+#include <nlnum/nlnum.h>
 
 namespace py = pybind11;
 
@@ -10,7 +10,7 @@ int add(int i, int j) {
   return i + j;
 }
 
-PYBIND11_MODULE(nlcalc, m) {
+PYBIND11_MODULE(nlnum, m) {
   m.doc() = R"pbdoc(
     Pybind11 example plugin
     -----------------------
@@ -31,19 +31,19 @@ PYBIND11_MODULE(nlcalc, m) {
             Some other explanation about the subtract function.
         )pbdoc");
 
-  m.def("nlcoef", &nlcalc::nlcoef, R"pbdoc(
+  m.def("nlcoef", &nlnum::nlcoef, R"pbdoc(
     Compute a single Newell-Littlewood coefficient.
     INPUT:
     - ``mu`` -- a partition (weakly decreasing list of non-negative integers).
     - ``nu`` -- a partition.
     - ``lambda`` -- a partition.
     EXAMPLES::
-        python: from nlcalc import nlcoef
+        python: from nlnum import nlcoef
         python: nlcoef([2,1], [2,1], [4, 2])
         1
   )pbdoc");
 
-  m.def("lrcoef", &nlcalc::lrcoef, R"pbdoc(
+  m.def("lrcoef", &nlnum::lrcoef, R"pbdoc(
     Compute a single Littlewood-Richardson coefficient.
     Return the coefficient of ``outer`` in the product of the Schur
     functions indexed by ``inner1`` and ``inner2``.
@@ -52,7 +52,7 @@ PYBIND11_MODULE(nlcalc, m) {
     - ``inner1`` -- a partition.
     - ``inner2`` -- a partition.
     EXAMPLES::
-        python: from nlcalc import lrcoef
+        python: from nlnum import lrcoef
         python: lrcoef([3,2,1], [2,1], [2,1])
         2
         python: lrcoef([3,3], [2,1], [2,1])
