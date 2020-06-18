@@ -31,6 +31,18 @@ PYBIND11_MODULE(nlcalc, m) {
             Some other explanation about the subtract function.
         )pbdoc");
 
+  m.def("nlcoef", &nlcalc::nlcoef, R"pbdoc(
+    Compute a single Newell-Littlewood coefficient.
+    INPUT:
+    - ``mu`` -- a partition (weakly decreasing list of non-negative integers).
+    - ``nu`` -- a partition.
+    - ``lambda`` -- a partition.
+    EXAMPLES::
+        python: from nlcalc import nlcoef
+        python: nlcoef([2,1], [2,1], [4, 2])
+        1
+  )pbdoc");
+
   m.def("lrcoef", &nlcalc::lrcoef, R"pbdoc(
     Compute a single Littlewood-Richardson coefficient.
     Return the coefficient of ``outer`` in the product of the Schur
@@ -39,17 +51,13 @@ PYBIND11_MODULE(nlcalc, m) {
     - ``outer`` -- a partition (weakly decreasing list of non-negative integers).
     - ``inner1`` -- a partition.
     - ``inner2`` -- a partition.
-    .. note::
-       This function converts its inputs into :func:`Partition`'s.  If
-       you don't need these checks and your inputs are valid, then you
-       can use :func:`lrcoef_unsafe`.
     EXAMPLES::
-        python: from python.libs.lrcalc.lrcalc import lrcoef   #optional - lrcalc
-        python: lrcoef([3,2,1], [2,1], [2,1])                #optional - lrcalc
+        python: from nlcalc import lrcoef
+        python: lrcoef([3,2,1], [2,1], [2,1])
         2
-        python: lrcoef([3,3], [2,1], [2,1])                  #optional - lrcalc
+        python: lrcoef([3,3], [2,1], [2,1])
         1
-        python: lrcoef([2,1,1,1,1], [2,1], [2,1])            #optional - lrcalc
+        python: lrcoef([2,1,1,1,1], [2,1], [2,1])
         0
   )pbdoc");
 

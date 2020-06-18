@@ -30,17 +30,17 @@ target_compile_features(nlcalc-lib PUBLIC cxx_std_11)
 # Cross-platform compiler lints
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
         OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    target_compile_options(nlcalc-lib PRIVATE
-            -Wall
-            -Wextra
-            -Wswitch
-            -Wconversion
-            -Wparentheses
-            -Wfloat-equal
-            -Wzero-as-null-pointer-constant
-            -Wpedantic
-            -pedantic
-            -pedantic-errors)
+    #target_compile_options(nlcalc-lib PRIVATE
+            #-Wall)
+            #-Wextra
+            #-Wswitch
+            #-Wconversion
+            #-Wparentheses
+            #-Wfloat-equal
+            #-Wzero-as-null-pointer-constant
+            # -Wpedantic
+            #-pedantic
+            #-pedantic-errors)
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
     target_compile_options(nlcalc-lib PRIVATE /W3)
 endif ()

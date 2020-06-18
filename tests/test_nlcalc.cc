@@ -39,3 +39,8 @@ TEST_CASE("Littlewood-Richardson coefficient", "[lrcoef]") {
     REQUIRE(lr == 0);
   }
 }
+
+TEST_CASE("Newell-Littlewood number", "[nlcoef]") {
+  const int64_t nl = nlcalc::nlcoef({2, 1}, {2, 1}, {4, 2});
+  REQUIRE(nl == 1);
+}
