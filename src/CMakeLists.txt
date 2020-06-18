@@ -22,7 +22,7 @@ add_library(nlnum-lib ${SOURCE_LIST} ${HEADER_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(nlnum-lib PUBLIC "${NLNum_SOURCE_DIR}/include/")
 
-target_link_libraries(nlnum-lib PUBLIC lrcalc PRIVATE python3.6m pybind11)
+target_link_libraries(nlnum-lib PUBLIC lrcalc PRIVATE ${Python3_LIBRARIES} pybind11)
 
 # All users of this library will need at least C++11
 target_compile_features(nlnum-lib PUBLIC cxx_std_11)
