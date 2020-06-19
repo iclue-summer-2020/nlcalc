@@ -1,7 +1,7 @@
-// Copyright (c) 2020 [Your Name]. All rights reserved.
+// Copyright (c) 2020 ICLUE @ UIUC. All rights reserved.
 
-#ifndef nlnum_H_
-#define nlnum_H_
+#ifndef NLNUM_NLNUM_H_
+#define NLNUM_NLNUM_H_
 
 #include <cstdint>
 #include <map>
@@ -34,12 +34,18 @@ int64_t lrcoef(
     const std::vector<int>& inner1,
     const std::vector<int>& inner2);
 
-// Computes the Newell-Littlewood coefficient
+// Computes the Newell-Littlewood coefficient using Proposition 2.3.
 int64_t nlcoef_slow(
+    const std::vector<int>& mu,
+    const std::vector<int>& nu,
+    const std::vector<int>& lambda);
+
+// Computes the Newell-Littlewood coefficient using the definition 1.1.
+int64_t nlcoef(
     const std::vector<int>& mu,
     const std::vector<int>& nu,
     const std::vector<int>& lambda);
 
 }  // namespace nlnum
 
-#endif  // nlnum_H_
+#endif  // NLNUM_NLNUM_H_
