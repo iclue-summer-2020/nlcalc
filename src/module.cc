@@ -32,14 +32,26 @@ PYBIND11_MODULE(nlnum, m) {
         )pbdoc");
 
   m.def("nlcoef_slow", &nlnum::nlcoef_slow, R"pbdoc(
-    Compute a single Newell-Littlewood coefficient.
+    Compute a single Newell-Littlewood coefficient using Proposition 2.3.
+    INPUT:
+    - ``mu`` -- a partition (weakly decreasing list of non-negative integers).
+    - ``nu`` -- a partition.
+    - ``lambda`` -- a partition.
+    EXAMPLES::
+        python: from nlnum import nlcoef_slow
+        python: nlcoef_slow([2,1], [2,1], [4, 2])
+        1
+  )pbdoc");
+
+  m.def("nlcoef", &nlnum::nlcoef, R"pbdoc(
+    Compute a single Newell-Littlewood coefficient using the definition (1.1).
     INPUT:
     - ``mu`` -- a partition (weakly decreasing list of non-negative integers).
     - ``nu`` -- a partition.
     - ``lambda`` -- a partition.
     EXAMPLES::
         python: from nlnum import nlcoef
-        python: nlcoef_slow([2,1], [2,1], [4, 2])
+        python: nlcoef([2,1], [2,1], [4, 2])
         1
   )pbdoc");
 
