@@ -2,6 +2,8 @@
 
 #define CATCH_CONFIG_MAIN
 
+#include <iostream>
+
 #include <catch2/catch.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -10,6 +12,7 @@ extern "C" {
 #include <lrcalc/vector.h>
 }
 #include <nlnum/nlnum.h>
+#include <nlnum/partitions_in.h>
 
 namespace py = pybind11;
 
@@ -40,10 +43,10 @@ TEST_CASE("Littlewood-Richardson coefficient", "[lrcoef]") {
   }
 }
 
-TEST_CASE("Newell-Littlewood number", "[nlcoef_slow]") {
+TEST_CASE("Newell-Littlewood number Slow", "[nlcoef_slow]") {
   SECTION("Test 1") {
     const int64_t nl = nlnum::nlcoef_slow({2, 1}, {2, 1}, {4, 2});
-    REQUIRE(nl == 1);
+    REQUIRE(nl == 0);
   }
   SECTION("Test 2") {
     const int64_t nl = nlnum::nlcoef_slow({8, 4, 4}, {8, 4, 4}, {8, 4, 4});
@@ -53,4 +56,32 @@ TEST_CASE("Newell-Littlewood number", "[nlcoef_slow]") {
     const int64_t nl = nlnum::nlcoef_slow({12, 6, 6}, {12, 6, 6}, {12, 6, 6});
     REQUIRE(nl == 676);
   }
+}
+
+TEST_CASE("Newell-Littlewood number", "[nlcoef]") {
+  SECTION("Test 1") {
+    const int64_t nl = nlnum::nlcoef({2, 1}, {2, 1}, {4, 2});
+    REQUIRE(nl == 0);
+  }
+  SECTION("Test 2") {
+    const int64_t nl = nlnum::nlcoef({8, 4, 4}, {8, 4, 4}, {8, 4, 4});
+    REQUIRE(nl == 141);
+  }
+  SECTION("Test 3") {
+    const int64_t nl = nlnum::nlcoef({12, 6, 6}, {12, 6, 6}, {12, 6, 6});
+    REQUIRE(nl == 676);
+  }
+  SECTION("Test 4") {
+    const int64_t nl = nlnum::nlcoef({24, 12, 12}, {24, 12, 12}, {24, 12, 12});
+    REQUIRE(nl == 16366);
+  }
+}
+
+TEST_CASE("Partitions In", "[partitions-in]") {
+  nlnum::PartitionsIn pi({24, 12, 12}, 24);
+  int sum = 0;
+  for (const nlnum::Partition& partition : pi) {
+    ++sum;
+  }
+  REQUIRE(sum == 61);
 }

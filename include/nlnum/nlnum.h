@@ -10,6 +10,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <nlnum/partitions_in.h>
 
 extern "C" {
 #include <lrcalc/hashtab.h>
@@ -20,31 +21,25 @@ namespace py = pybind11;
 
 namespace nlnum {
 // Converts a C++ vector into a C vector defined by lrcalc.
-vector* to_vector(const std::vector<int>&);
+vector* to_vector(const Partition&);
 
 // Converts a C vector defined by lrcalc into a C++ vector.
-bool to_cppvec(const vector*, std::vector<int>*);
+bool to_cppvec(const vector*, Partition*);
 
 // Converts a C hashtable defined by lrcalc to a C++ map.
-bool to_map(hashtab*, std::map<std::vector<int>, int>*);
+bool to_map(hashtab*, std::map<Partition, int>*);
 
 // Computes the Littlewood-Richardson coefficient.
-int64_t lrcoef(
-    const std::vector<int>& outer,
-    const std::vector<int>& inner1,
-    const std::vector<int>& inner2);
+int64_t lrcoef(const Partition& outer, const Partition& inner1,
+               const Partition& inner2);
 
 // Computes the Newell-Littlewood coefficient using Proposition 2.3.
-int64_t nlcoef_slow(
-    const std::vector<int>& mu,
-    const std::vector<int>& nu,
-    const std::vector<int>& lambda);
+int64_t nlcoef_slow(const Partition& mu, const Partition& nu,
+                    const Partition& lambda);
 
 // Computes the Newell-Littlewood coefficient using the definition 1.1.
-int64_t nlcoef(
-    const std::vector<int>& mu,
-    const std::vector<int>& nu,
-    const std::vector<int>& lambda);
+int64_t nlcoef(const Partition& mu, const Partition& nu,
+               const Partition& lambda);
 
 }  // namespace nlnum
 

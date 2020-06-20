@@ -13,24 +13,38 @@ typedef std::vector<int> Partition;
 // Iterates through each partition contained within a given partition `limit`.
 class PartitionsIn {
  public:
-  PartitionsIn(const Partition& limit);
+  PartitionsIn(const Partition& limit, const size_t size);
 
   class const_iterator : std::iterator<std::forward_iterator_tag, Partition> {
    public:
-    // This default constructor will be the end of the iterator.
-    const_iterator();
-    const_iterator(const Partition& limit);
+    const_iterator(const Partition& limit, const size_t size);
     const_iterator& operator++();
     const Partition& operator*() const;
     bool operator!=(const const_iterator&) const;
-    bool operator==(const const_iterator&) const;
 
    private:
-    int level_;
+    struct var {
+      int level;
+      int rem;
+      int mn;
+      int mx;
+      var* came_from;
+
+      var(int level, int rem, int mn, int mx, var* came_from)
+          : level(level), rem(rem), mn(mn), mx(mx), came_from(came_from) {}
+    };
+
+    bool Next();
+    bool GoBack(var* v);
+
+   private:
     const Partition limit_;
-    Partition last_;
-    Partition partition_;
-    bool finished_;
+    const size_t size_;
+    Partition parts_;
+    Partition ret_parts_;
+    std::vector<int> rsums_;
+    std::vector<var*> call_stack_;
+    bool done_;
   };
 
  public:
@@ -38,6 +52,7 @@ class PartitionsIn {
   const_iterator end() const;
 
  private:
+  const size_t size_;
   const Partition limit_;
 };
 
