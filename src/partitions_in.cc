@@ -46,6 +46,13 @@ bool PartitionsIn::const_iterator::GoBack(var* v) {
   return true;
 }
 
+// This algorithm is a bit complicated. Since C++ does not have a yield
+// statement in the way that Python does, a `yield` functionality needed to be
+// made, which involves storing states in a stack. The variable `call_stack_`
+// really only holds one element at a time, but each element stores a pointer
+// to its parent.
+// For more info, see the following Python code:
+// https://github.com/iclue-summer-2020/Newell-Littlewood-Coefficient/blob/david/partitionsin.py
 bool PartitionsIn::const_iterator::Next() {
   while (!call_stack_.empty()) {
     var* v = call_stack_.back();
@@ -57,12 +64,12 @@ bool PartitionsIn::const_iterator::Next() {
       return true;
     } else if (v->rem < 0 || v->level >= limit_.size() ||
                rsums_[v->level] < v->rem ||
-               (parts_.size() > 0 &&
+               (!parts_.empty() &&
                 parts_.back() * (limit_.size() - parts_.size()) < v->rem)) {
       if (!GoBack(v)) break;
     } else if (v->mx == -1) {
       const int max_part = std::min(
-          v->rem, std::min(limit_[v->level], parts_.size() > 0
+          v->rem, std::min(limit_[v->level], !parts_.empty()
                                                  ? parts_.back()
                                                  : static_cast<int>(size_)));
       v->mx = max_part;

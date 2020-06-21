@@ -63,7 +63,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='nlnum',
-    version='0.0.4',
+    version='0.0.5',
     author='ICLUE @ UIUC',
     author_email='',
     description='A library to compute Littlewood-Richardson coefficients and Newell-Littlewood numbers',
