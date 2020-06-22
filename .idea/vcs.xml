@@ -8,6 +8,10 @@
     <mapping directory="$PROJECT_DIR$/_deps/pybind-src" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/_deps/pybind-src/tools/clang" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/build/temp.linux-x86_64-3.5/_deps/catch2-src" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/temp.linux-x86_64-3.5/_deps/discreture-src" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/temp.linux-x86_64-3.5/_deps/lrcalc-src" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/temp.linux-x86_64-3.5/_deps/pybind-src" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/build/temp.linux-x86_64-3.5/_deps/pybind-src/tools/clang" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/build/temp.linux-x86_64-3.6/_deps/catch2-src" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/build/temp.linux-x86_64-3.6/_deps/discreture-src" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/build/temp.linux-x86_64-3.6/_deps/gflags-src" vcs="Git" />
