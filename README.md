@@ -1,4 +1,5 @@
 [![nlnum](https://img.shields.io/pypi/v/nlnum.svg)](https://pypi.python.org/pypi/nlnum/)
+[![Build Status](https://travis-ci.org/iclue-summer-2020/nlnum.svg?branch=master)](https://travis-ci.org/iclue-summer-2020/nlnum)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![docs](https://img.shields.io/badge/docs-yes-brightgreen)](docs/README.md)
 
