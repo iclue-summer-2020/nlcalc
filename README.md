@@ -1,4 +1,10 @@
+[![nlnum](https://img.shields.io/pypi/v/nlnum.svg)](https://pypi.python.org/pypi/nlnum/)
+[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![docs](https://img.shields.io/badge/docs-yes-brightgreen)](docs/README.md)
+
 # nlnum
+
+Some code for the paper "Newell-Littlewood numbers" - [https://arxiv.org/abs/2005.09012](https://arxiv.org/abs/2005.09012)
 
 ## Install
 
@@ -6,9 +12,6 @@
 python3 -m pip install --user nlnum
 ```
 
-[![nlnum](https://img.shields.io/pypi/v/nlnum.svg)](https://pypi.python.org/pypi/nlnum/)
-[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![docs](https://img.shields.io/badge/docs-yes-brightgreen)](docs/README.md)
 
 Read [this document](https://cliutils.gitlab.io/modern-cmake/chapters/basics/structure.html) to understand the project
 layout.
