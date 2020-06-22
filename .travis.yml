@@ -6,9 +6,9 @@ services:
 before_install:
   - docker build -t icluesu2020/nlnum:latest .
   - docker run --name nlnum_bash --rm -it -d icluesu2020/nlnum:latest bash
+  - docker ps
 
 script:
   - ls
   - pwd
-  - cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release --build cmake-build-release --target test-nlnum -- -j 2 .
-  - time ./cmake-build-release/tests/cmake-build-debug/test-nlnum
+  - docker exec -d nlnum_bash 'cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release --build cmake-build-release --target test-nlnum -- -j 2 . && time ./cmake-build-release/tests/cmake-build-debug/test-nlnum'
