@@ -9,11 +9,6 @@ project(NLNum
         LANGUAGES CXX)
 cmake_minimum_required(VERSION 2.8.12)
 project(NLNum)
-# Note: The lines below allows a pip install pybind11 to be found by cmake.
-#       Do not remove.
-execute_process(COMMAND python3.6 -c
-               "import pybind11_cmake; print(pybind11_cmake.__path__[0])"
-               OUTPUT_VARIABLE pybind11_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
 

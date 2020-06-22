@@ -10,5 +10,5 @@ before_install:
 script:
   - ls
   - pwd
-  - cmake -DCMAKE_BUILD_TYPE=Release --build cmake-build-release --target test-nlnum -- -j 2 .
+  - cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release --build cmake-build-release --target test-nlnum -- -j 2 .
   - time ./cmake-build-release/tests/cmake-build-debug/test-nlnum
