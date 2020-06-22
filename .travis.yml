@@ -11,5 +11,5 @@ before_install:
 script:
   - ls
   - pwd
-  - docker exec -d nlnum_bash cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release --build cmake-build-release --target test-nlnum -- -j 2 .
-  - docker exec -d nlnum_bash time ./cmake-build-release/tests/cmake-build-debug/test-nlnum
+  - docker exec -t -d nlnum_bash cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release --build cmake-build-release --target test-nlnum -- -j 2 .
+  - docker exec -t -d nlnum_bash time ./cmake-build-release/tests/cmake-build-debug/test-nlnum
