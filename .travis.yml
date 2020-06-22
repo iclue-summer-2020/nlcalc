@@ -11,3 +11,4 @@ script:
   - ls
   - pwd
   - cmake -DCMAKE_BUILD_TYPE=Release --build cmake-build-release --target test-nlnum -- -j 2
+  - cmake-build-release/tests/cmake-build-debug/test-nlnum
