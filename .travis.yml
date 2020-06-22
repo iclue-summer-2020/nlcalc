@@ -1,0 +1,13 @@
+language: c++
+
+services:
+  - docker
+
+before_install:
+  - docker build -t icluesu2020/nlnum:latest .
+  - docker run --name nlnum_bash --rm -it -d icluesu2020/nlnum:latest bash
+
+script:
+  - ls
+  - pwd
+  - cmake -DCMAKE_BUILD_TYPE=Release --build cmake-build-release --target test-nlnum -- -j 2
