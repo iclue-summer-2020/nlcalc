@@ -22,7 +22,7 @@ add_library(nlnum-lib ${SOURCE_LIST} ${HEADER_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(nlnum-lib PUBLIC "${NLNum_SOURCE_DIR}/include/")
 
-target_link_libraries(nlnum-lib PUBLIC lrcalc PRIVATE ${Python3_LIBRARIES} pybind11 discreture)
+target_link_libraries(nlnum-lib PUBLIC lrcalc PRIVATE ${Python3_LIBRARIES} pybind11 OpenMP::OpenMP_CXX)
 
 # All users of this library will need at least C++11
 target_compile_features(nlnum-lib PUBLIC cxx_std_11)
@@ -30,17 +30,17 @@ target_compile_features(nlnum-lib PUBLIC cxx_std_11)
 # Cross-platform compiler lints
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
         OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    #target_compile_options(nlnum-lib PRIVATE
-            #-Wall)
-            #-Wextra
-            #-Wswitch
-            #-Wconversion
-            #-Wparentheses
-            #-Wfloat-equal
-            #-Wzero-as-null-pointer-constant
-            # -Wpedantic
-            #-pedantic
-            #-pedantic-errors)
+    target_compile_options(nlnum-lib PRIVATE
+            -Wall
+            -Wextra
+            -Wswitch
+            -Wconversion
+            -Wparentheses
+            -Wfloat-equal
+            -Wzero-as-null-pointer-constant
+            -Wpedantic
+            -pedantic
+            -pedantic-errors)
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
     target_compile_options(nlnum-lib PRIVATE /W3)
 endif ()

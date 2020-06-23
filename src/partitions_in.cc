@@ -9,7 +9,7 @@
 namespace nlnum {
 
 PartitionsIn::PartitionsIn(const Partition& limit, const size_t size)
-    : limit_{limit}, size_{size} {}
+    : size_{size}, limit_{limit} {}
 
 PartitionsIn::const_iterator PartitionsIn::begin() const {
   return const_iterator{limit_, size_};
@@ -25,12 +25,12 @@ PartitionsIn::const_iterator::const_iterator(const Partition& limit,
     : limit_{limit}, size_{size}, done_{false} {
   // Keep track of suffix sums.
   for (auto it = limit_.rbegin(); it != limit_.rend(); ++it) {
-    const int last = rsums_.size() > 0 ? rsums_.back() : 0;
+    const int last = !rsums_.empty() ? rsums_.back() : 0;
     rsums_.push_back(last + *it);
   }
   std::reverse(rsums_.begin(), rsums_.end());
 
-  call_stack_.push_back(new var{0, size_, 1, -1, nullptr});
+  call_stack_.push_back(new var{0, static_cast<int>(size_), 1, -1, nullptr});
 
   ++(*this);
 }
@@ -58,14 +58,16 @@ bool PartitionsIn::const_iterator::Next() {
     var* v = call_stack_.back();
     call_stack_.pop_back();
 
+    const int left =
+        static_cast<int>(limit_.size()) - static_cast<int>(parts_.size());
+
     if (v->rem == 0 && parts_.size() <= limit_.size()) {
       ret_parts_ = parts_;
       if (!GoBack(v)) break;
       return true;
     } else if (v->rem < 0 || v->level >= limit_.size() ||
                rsums_[v->level] < v->rem ||
-               (!parts_.empty() &&
-                parts_.back() * (limit_.size() - parts_.size()) < v->rem)) {
+               (!parts_.empty() && parts_.back() * left < v->rem)) {
       if (!GoBack(v)) break;
     } else if (v->mx == -1) {
       const int max_part = std::min(

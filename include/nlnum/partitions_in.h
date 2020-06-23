@@ -24,13 +24,13 @@ class PartitionsIn {
 
    private:
     struct var {
-      int level;
+      size_t level;
       int rem;
       int mn;
       int mx;
       var* came_from;
 
-      var(int level, int rem, int mn, int mx, var* came_from)
+      var(size_t level, int rem, int mn, int mx, var* came_from)
           : level(level), rem(rem), mn(mn), mx(mx), came_from(came_from) {}
     };
 

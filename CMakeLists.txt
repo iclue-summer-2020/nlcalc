@@ -28,8 +28,13 @@ find_package(Python3 COMPONENTS Interpreter Development)
 if(Python3_FOUND)
     message("python3 found" ${Python3_STDLIB})
 else()
-    message("python3 not found :(")
+    message(FATAL_ERROR "python3 not found :(")
 endif()
+# Use OpenMP.
+find_package(OpenMP)
+if (NOT OpenMP_CXX_FOUND)
+    message(FATAL_ERROR "OpenMP not found :(")
+endif ()
 # Let's nicely support folders in IDE's
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -117,4 +122,3 @@ add_subdirectory(src)
 
 # The tests are here.
 add_subdirectory(tests)
-

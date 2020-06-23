@@ -6,6 +6,8 @@
 #include <numeric>
 #include <vector>
 
+#include <omp.h>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -107,7 +109,8 @@ int64_t nlcoef_slow_helper(const Partition& alpha, const Partition& mu,
 
 // Returns the sum if it is greater than zero, else returns zero.
 size_t ZSum(const Partition& parts) {
-  return std::max(0, std::accumulate(parts.begin(), parts.end(), 0));
+  return static_cast<size_t>(
+      std::max(0, std::accumulate(parts.begin(), parts.end(), 0)));
 }
 
 int64_t nlcoef_slow(const Partition& mu, const Partition& nu,
