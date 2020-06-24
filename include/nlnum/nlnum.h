@@ -7,17 +7,12 @@
 #include <map>
 #include <vector>
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-
 #include <nlnum/partitions_in.h>
 
 extern "C" {
 #include <lrcalc/hashtab.h>
 #include <lrcalc/vector.h>
 }
-
-namespace py = pybind11;
 
 namespace nlnum {
 // Converts a C++ vector into a C vector defined by lrcalc.

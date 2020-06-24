@@ -21,26 +21,6 @@ add_test(NAME test-nlnum COMMAND test-nlnum) # Command can be a target
 # Add folders
 set_target_properties(test-nlnum PROPERTIES FOLDER iclue)
 
-# Cross-platform compiler lints
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
-        OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    target_compile_options(test-nlnum PRIVATE
-            -Wall
-            -Wextra
-            -Wswitch
-            -Wconversion
-            -Wparentheses
-            -Wfloat-equal
-            -Wzero-as-null-pointer-constant
-            -Wpedantic
-            -pedantic
-            -pedantic-errors)
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-    target_compile_options(test-nlnum PRIVATE
-            /W3)
-endif ()
-
-
 add_custom_command(
         TARGET test-nlnum
         PRE_BUILD

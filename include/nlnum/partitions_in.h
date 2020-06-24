@@ -15,7 +15,7 @@ class PartitionsIn {
  public:
   PartitionsIn(const Partition& limit, const size_t size);
 
-  class const_iterator : std::iterator<std::forward_iterator_tag, Partition> {
+  class const_iterator : public std::iterator<std::forward_iterator_tag, Partition> {
    public:
     const_iterator(const Partition& limit, const size_t size);
     const_iterator& operator++();

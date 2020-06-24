@@ -22,28 +22,10 @@ add_library(nlnum-lib ${SOURCE_LIST} ${HEADER_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(nlnum-lib PUBLIC "${NLNum_SOURCE_DIR}/include/")
 
-target_link_libraries(nlnum-lib PUBLIC lrcalc PRIVATE ${Python3_LIBRARIES} pybind11 OpenMP::OpenMP_CXX)
+target_link_libraries(nlnum-lib PUBLIC lrcalc PRIVATE ${Python3_LIBRARIES} OpenMP::OpenMP_CXX)
 
 # All users of this library will need at least C++11
 target_compile_features(nlnum-lib PUBLIC cxx_std_11)
-
-# Cross-platform compiler lints
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
-        OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    target_compile_options(nlnum-lib PRIVATE
-            -Wall
-            -Wextra
-            -Wswitch
-            -Wconversion
-            -Wparentheses
-            -Wfloat-equal
-            -Wzero-as-null-pointer-constant
-            -Wpedantic
-            -pedantic
-            -pedantic-errors)
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-    target_compile_options(nlnum-lib PRIVATE /W3)
-endif ()
 
 # Enable fPIC.
 set_property(TARGET nlnum-lib PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -60,28 +42,10 @@ pybind11_add_module(nlnum ${MODULE_FILES})
 # We need this directory, and users of our library will need it too
 # target_include_directories(nlnum-module PUBLIC ../include)
 
-target_link_libraries(nlnum PRIVATE nlnum-lib)
+target_link_libraries(nlnum PRIVATE nlnum-lib pybind11)
 
 # All users of this library will need at least C++11
 target_compile_features(nlnum PUBLIC cxx_std_11)
-
-# Cross-platform compiler lints
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
-        OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    target_compile_options(nlnum PRIVATE
-            -Wall
-            -Wextra
-            -Wswitch
-            -Wconversion
-            -Wparentheses
-            -Wfloat-equal
-            -Wzero-as-null-pointer-constant
-            -Wpedantic
-            -pedantic
-            -pedantic-errors)
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-    target_compile_options(nlnum PRIVATE /W3)
-endif ()
 
 set_property(TARGET nlnum PROPERTY POSITION_INDEPENDENT_CODE ON)
 

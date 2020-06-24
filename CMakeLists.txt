@@ -48,6 +48,11 @@ elseif(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "--coverage")
 endif()
 
+# Set flags.
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wswitch -Wconversion -Wparentheses -Wfloat-equal -Wzero-as-null-pointer-constant -Wpedantic -pedantic -pedantic-errors")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
+
 # FetchContent added in CMake 3.11, downloads during the configure step
 include(FetchContent)
 
@@ -68,13 +73,6 @@ FetchContent_Declare(
     pybind
     GIT_REPOSITORY https://github.com/pybind/pybind11.git
     GIT_TAG        v2.5.0
-)
-
-# Discreture.
-FetchContent_Declare(
-        discreture
-        GIT_REPOSITORY https://github.com/mraggi/discreture.git
-        GIT_TAG v1.1
 )
 
 # LRCalc
@@ -99,16 +97,6 @@ if(NOT pybind_POPULATED)
     FetchContent_Populate(pybind)
     add_subdirectory(${pybind_SOURCE_DIR} ${pybind_BINARY_DIR})
 endif()
-
-# Adds Discreture.
-FetchContent_GetProperties(discreture)
-if (NOT discreture_POPULATED)
-    FetchContent_Populate(discreture)
-    # This is overkill since we only need a single file. Though it is a clean solution.
-    add_library(discreture INTERFACE)
-    target_include_directories(discreture INTERFACE ${discreture_SOURCE_DIR}/include)
-endif ()
-
 
 # Adds lrcalc
 FetchContent_GetProperties(lrcalc)

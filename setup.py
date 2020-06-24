@@ -1,13 +1,12 @@
 
 import os
-import re
-import sys
 import platform
+import re
 import subprocess
-
+import sys
+from distutils.version import LooseVersion
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-from distutils.version import LooseVersion
 
 
 class CMakeExtension(Extension):
@@ -63,7 +62,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='nlnum',
-    version='0.0.5',
+    version='0.0.6',
     author='ICLUE @ UIUC',
     author_email='',
     description='A library to compute Littlewood-Richardson coefficients and Newell-Littlewood numbers',

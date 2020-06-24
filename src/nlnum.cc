@@ -1,15 +1,14 @@
 // Copyright 2020 ICLUE @ UIUC. All rights reserved.
 
 #include <algorithm>
+#include <climits>
 #include <cstdint>
+#include <exception>
 #include <map>
 #include <numeric>
 #include <vector>
 
 #include <omp.h>
-
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
 extern "C" {
 #include <lrcalc/hashtab.h>
@@ -20,9 +19,26 @@ extern "C" {
 #include <nlnum/nlnum.h>
 #include <nlnum/partitions_in.h>
 
-namespace py = pybind11;
-
 namespace nlnum {
+
+// Make sure partitions are weakly decreasing and only positive parts.
+void ValidatePartitions(const std::vector<Partition>& partitions) {
+  for (const Partition& partition : partitions) {
+    int last = INT_MAX;
+    for (const int part : partition) {
+      if (part <= 0) {
+        throw std::invalid_argument(
+            "The parts of each partition must be positive.");
+      }
+      if (last < part) {
+        throw std::invalid_argument(
+            "Each partition must be strictly decreasing.");
+      }
+
+      last = part;
+    }
+  }
+}
 
 vector* to_vector(const Partition& vec) {
   vector* v = v_new(static_cast<int>(vec.size()));
@@ -48,6 +64,8 @@ bool to_cppvec(const vector* v, Partition* vec) {
 
 int64_t lrcoef(const Partition& outer, const Partition& inner1,
                const Partition& inner2) {
+  ValidatePartitions({outer, inner1, inner2});
+
   vector* o = to_vector(outer);
   vector* i1 = to_vector(inner1);
   vector* i2 = to_vector(inner2);
@@ -115,6 +133,8 @@ size_t ZSum(const Partition& parts) {
 
 int64_t nlcoef_slow(const Partition& mu, const Partition& nu,
                     const Partition& lambda) {
+  ValidatePartitions({mu, nu, lambda});
+
   int64_t nl = 0;
   // Step 1: Compute the intersection of mu and nu.
   const Partition limit = Intersection(mu, nu);
@@ -148,9 +168,12 @@ bool to_map(hashtab* ht, std::map<Partition, int>* m) {
   return true;
 }
 
-int64_t nlcoef(const Partition& mu, const Partition& nu,
-               const Partition& lambda) {
-  int64_t nl = 0;
+bool NeedsComputation(const Partition& mu, const Partition& nu,
+                      const Partition& lambda, int64_t* nl,
+                      std::vector<Partition>* va, std::vector<Partition>* vb,
+                      std::vector<Partition>* vc) {
+  ValidatePartitions({mu, nu, lambda});
+  if (nl == nullptr) return true;
 
   const Partition int_mn = Intersection(mu, nu);
   const Partition int_ml = Intersection(mu, lambda);
@@ -161,29 +184,74 @@ int64_t nlcoef(const Partition& mu, const Partition& nu,
   const size_t sn = ZSum(nu);
 
   // Lemma 2.2 (v).
-  if ((sl + sm + sn) % 2 == 1) return 0;
+  if ((sl + sm + sn) % 2 == 1) {
+    *nl = 0;
+    return false;
+  }
 
   // Lemma 2.2 (iii) + some common knowledge.
-  if (sl + sm <= sn || sm + sn <= sl || sl + sn <= sm) return 0;
+  if (sl + sm <= sn || sm + sn <= sl || sl + sn <= sm) {
+    *nl = 0;
+    return false;
+  }
 
   // Lemma 2.2 (ii).
-  if (sm + sn == sl) return lrcoef(lambda, mu, nu);
+  if (sm + sn == sl) {
+    *nl = lrcoef(lambda, mu, nu);
+    return false;
+  }
 
   // Lemma 2.2 Equation 6.
   const size_t sa = ((sm + sn) - sl) / 2;
   const size_t sb = ((sl + sm) - sn) / 2;
   const size_t sc = ((sl + sn) - sm) / 2;
 
-  for (const Partition& alpha : PartitionsIn(int_mn, sa)) {
-    const auto& aa = alpha;
-    for (const Partition& beta : PartitionsIn(int_ml, sb)) {
+  const auto vfn = [&](const PartitionsIn&& pi) {
+    std::vector<Partition> v;
+    for (const Partition& partition : pi) {
+      v.push_back(partition);
+    }
+    return v;
+  };
+
+  if (va == nullptr || vb == nullptr || vc == nullptr) {
+    *nl = 0;
+    return false;
+  }
+
+  *va = vfn(PartitionsIn(int_mn, sa));
+  *vb = vfn(PartitionsIn(int_ml, sb));
+  *vc = vfn(PartitionsIn(int_nl, sc));
+
+  return true;
+}
+
+int64_t nlcoef(const Partition& mu, const Partition& nu,
+               const Partition& lambda) {
+  int64_t nl;
+  std::vector<Partition> va;
+  std::vector<Partition> vb;
+  std::vector<Partition> vc;
+  if (!NeedsComputation(mu, nu, lambda, &nl, &va, &vb, &vc)) return nl;
+
+  nl = 0;
+  // The `Release` version seems to benefit from OpenMP parallel directives.
+  // Use a `dynamic` schedule since the work is not balanced among iterations.
+#pragma omp parallel for reduction(+ : nl) schedule(dynamic)
+  for (auto ita = va.begin(); ita < va.end(); ++ita) {
+    const Partition& alpha = *ita;
+    for (auto itb = vb.begin(); itb < vb.end(); ++itb) {
+      const Partition& beta = *itb;
       const int64_t cabm = lrcoef(mu, alpha, beta);
       if (cabm == 0) continue;
-      for (const Partition& gamma : PartitionsIn(int_nl, sc)) {
+      for (auto itc = vc.begin(); itc < vc.end(); ++itc) {
+        const Partition& gamma = *itc;
+
         const int64_t cacn = lrcoef(nu, alpha, gamma);
         if (cacn == 0) continue;
         const int64_t cbcl = lrcoef(lambda, beta, gamma);
         if (cbcl == 0) continue;
+
         nl += cabm * cacn * cbcl;
       }
     }
