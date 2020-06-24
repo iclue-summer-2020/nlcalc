@@ -62,11 +62,11 @@ class CMakeBuild(build_ext):
 
 setup(
     name='nlnum',
-    version='1.0.0',
+    version='1.0.1',
     author='ICLUE @ UIUC',
     author_email='',
     description='A library to compute Littlewood-Richardson coefficients and Newell-Littlewood numbers',
-    long_description='',
+    long_description='https://github.com/iclue-summer-2020/nlnum/',
     ext_modules=[CMakeExtension('nlnum')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
