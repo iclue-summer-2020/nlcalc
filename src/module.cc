@@ -1,14 +1,12 @@
 // Copyright 2020 ICLUE @ UIUC. All rights reserved.
 
+#include <vector>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <nlnum/nlnum.h>
 
 namespace py = pybind11;
-
-int add(int i, int j) {
-  return i + j;
-}
 
 PYBIND11_MODULE(nlnum, m) {
   m.doc() = R"pbdoc(
@@ -17,19 +15,10 @@ PYBIND11_MODULE(nlnum, m) {
     .. currentmodule:: cmake_example
     .. autosummary::
        :toctree: _generate
-       add
-       subtract
+       lrcoef
+       nlcoef
+       nlcoef_slow
     )pbdoc";
-
-  m.def("add", &add, R"pbdoc(
-            Add two numbers
-            Some other explanation about the add function.
-        )pbdoc");
-
-  m.def("subtract", [](int i, int j) { return i - j; }, R"pbdoc(
-            Subtract two numbers
-            Some other explanation about the subtract function.
-        )pbdoc");
 
   m.def("nlcoef_slow", &nlnum::nlcoef_slow, R"pbdoc(
     Compute a single Newell-Littlewood coefficient using Proposition 2.3.
@@ -40,10 +29,17 @@ PYBIND11_MODULE(nlnum, m) {
     EXAMPLES::
         python: from nlnum import nlcoef_slow
         python: nlcoef_slow([2,1], [2,1], [4, 2])
-        1
+        0
   )pbdoc");
 
-  m.def("nlcoef", &nlnum::nlcoef, R"pbdoc(
+  m.def(
+      "nlcoef",
+      py::overload_cast<
+          const std::vector<int>&,
+          const std::vector<int>&,
+          const std::vector<int>&,
+          const bool>(&nlnum::nlcoef),
+        R"pbdoc(
     Compute a single Newell-Littlewood coefficient using the definition (1.1).
     INPUT:
     - ``mu`` -- a partition (weakly decreasing list of non-negative integers).
@@ -51,9 +47,20 @@ PYBIND11_MODULE(nlnum, m) {
     - ``lambda`` -- a partition.
     EXAMPLES::
         python: from nlnum import nlcoef
-        python: nlcoef([2,1], [2,1], [4, 2])
+        python: nlcoef([8, 4, 4], [8, 4, 4], [8, 4, 4])
+        141
+        python: nlcoef([8, 4, 4], [8, 4, 4], [8, 4, 4], check_positivity=True)
         1
-  )pbdoc");
+        python: nlcoef([2, 1], [2, 1], [4, 2])
+        0
+        python: nlcoef([2, 1], [2, 1], [4, 2], check_positivity=True)
+        0
+    NOTES::
+        If you want check_positivity to be heavily optimized, the environment
+        variable `OMP_CANCELLATION` needs to be set to `true` BEFORE importing
+        this module.
+  )pbdoc",
+  py::arg("mu"), py::arg("nu"), py::arg("lambda"), py::arg("check_positivity") = false);
 
   m.def("lrcoef", &nlnum::lrcoef, R"pbdoc(
     Compute a single Littlewood-Richardson coefficient.

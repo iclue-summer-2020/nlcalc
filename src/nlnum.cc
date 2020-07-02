@@ -228,36 +228,59 @@ bool NeedsComputation(const Partition& mu, const Partition& nu,
 
 int64_t nlcoef(const Partition& mu, const Partition& nu,
                const Partition& lambda) {
+  return nlcoef(mu, nu, lambda, false);
+}
+
+int64_t nlcoef(const Partition& mu, const Partition& nu,
+               const Partition& lambda, const bool check_positivity) {
   int64_t nl;
   std::vector<Partition> va;
   std::vector<Partition> vb;
   std::vector<Partition> vc;
   if (!NeedsComputation(mu, nu, lambda, &nl, &va, &vb, &vc)) return nl;
 
+  bool is_positive = false;
   nl = 0;
   // The `Release` version seems to benefit from OpenMP parallel directives.
   // Use a `dynamic` schedule since the work is not balanced among iterations.
-#pragma omp parallel for reduction(+ : nl) schedule(dynamic)
-  for (auto ita = va.begin(); ita < va.end(); ++ita) {
-    const Partition& alpha = *ita;
-    for (auto itb = vb.begin(); itb < vb.end(); ++itb) {
-      const Partition& beta = *itb;
-      const int64_t cabm = lrcoef(mu, alpha, beta);
-      if (cabm == 0) continue;
-      for (auto itc = vc.begin(); itc < vc.end(); ++itc) {
-        const Partition& gamma = *itc;
+#pragma omp parallel
+  {
+#pragma omp for reduction(+ : nl) schedule(dynamic)
+    for (auto ita = va.begin(); ita < va.end(); ++ita) {
+      const Partition& alpha = *ita;
+      for (auto itb = vb.begin(); itb < vb.end(); ++itb) {
+        const Partition& beta = *itb;
+        const int64_t cabm = lrcoef(mu, alpha, beta);
+        if (cabm == 0) continue;
+        for (auto itc = vc.begin(); itc < vc.end(); ++itc) {
+          const Partition& gamma = *itc;
 
-        const int64_t cacn = lrcoef(nu, alpha, gamma);
-        if (cacn == 0) continue;
-        const int64_t cbcl = lrcoef(lambda, beta, gamma);
-        if (cbcl == 0) continue;
+          const int64_t cacn = lrcoef(nu, alpha, gamma);
+          if (cacn == 0) continue;
+          const int64_t cbcl = lrcoef(lambda, beta, gamma);
+          if (cbcl == 0) continue;
 
-        nl += cabm * cacn * cbcl;
+          if (check_positivity) {
+#ifndef _OPENMP
+            return 1;
+#endif
+#pragma omp atomic write
+            is_positive = true;
+#pragma omp cancel for
+          }
+
+          // Add to the answer.
+          nl += cabm * cacn * cbcl;
+        }
+      }
+
+      if (check_positivity) {
+#pragma omp cancellation point for
       }
     }
   }
 
-  return nl;
+  return check_positivity ? static_cast<int64_t>(is_positive) : nl;
 }
 
 }  // namespace nlnum

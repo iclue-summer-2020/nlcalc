@@ -102,3 +102,18 @@ TEST_CASE("Test bad partitions.", "[bad-partitions]") {
                     std::invalid_argument);
   }
 }
+
+TEST_CASE("Test positivity.", "[bad-partitions]") {
+  SECTION("Test 1") {
+    const int64_t positive = nlnum::nlcoef({2, 1}, {2, 1}, {4, 2}, true);
+    REQUIRE(positive == 0);
+  }
+  SECTION("Test 2") {
+    const int64_t positive = nlnum::nlcoef({120, 70, 70}, {80, 50, 50}, {80, 40, 40}, true);
+    REQUIRE(positive == 1);
+  }
+  SECTION("Test 3") {
+    const int64_t nl = nlnum::nlcoef({8, 4, 4}, {8, 4, 4}, {8, 4, 4}, false);
+    REQUIRE(nl == 141);
+  }
+}

@@ -36,6 +36,11 @@ int64_t nlcoef_slow(const Partition& mu, const Partition& nu,
 int64_t nlcoef(const Partition& mu, const Partition& nu,
                const Partition& lambda);
 
+// If check_positivity is true, then the output will either be 0 or 1,
+// depending if the NL number is positive or not. This will save time
+// if only positivity is needed.
+int64_t nlcoef(const Partition& mu, const Partition& nu,
+               const Partition& lambda, const bool check_positivity);
 }  // namespace nlnum
 
 #endif  // NLNUM_NLNUM_H_

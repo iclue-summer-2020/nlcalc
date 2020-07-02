@@ -1,6 +1,5 @@
 # Note that headers are optional, and do not affect add_library, but they will not
 # show up in IDEs unless they are listed in add_library.
-
 # Optionally glob, but only for CMake 3.12 or later:
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS
         "${NLNum_SOURCE_DIR}/include/nlnum/*.h"
@@ -26,6 +25,8 @@ target_link_libraries(nlnum-lib PUBLIC lrcalc PRIVATE ${Python3_LIBRARIES} OpenM
 
 # All users of this library will need at least C++11
 target_compile_features(nlnum-lib PUBLIC cxx_std_11)
+
+
 
 # Enable fPIC.
 set_property(TARGET nlnum-lib PROPERTY POSITION_INDEPENDENT_CODE ON)
