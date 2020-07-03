@@ -23,11 +23,6 @@ target_include_directories(nlnum-lib PUBLIC "${NLNum_SOURCE_DIR}/include/")
 
 target_link_libraries(nlnum-lib PUBLIC lrcalc PRIVATE ${Python3_LIBRARIES} OpenMP::OpenMP_CXX)
 
-# All users of this library will need at least C++11
-target_compile_features(nlnum-lib PUBLIC cxx_std_11)
-
-
-
 # Enable fPIC.
 set_property(TARGET nlnum-lib PROPERTY POSITION_INDEPENDENT_CODE ON)
 

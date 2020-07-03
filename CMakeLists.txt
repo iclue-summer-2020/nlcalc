@@ -12,6 +12,7 @@ project(NLNum)
 
 # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
 
+set(CMAKE_CXX_STANDARD 14)
 # In a real CMake application you wouldn't enable a debug
 # build like this, but for our purposes it's just fine.
 #

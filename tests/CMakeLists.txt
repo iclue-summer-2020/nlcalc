@@ -8,9 +8,6 @@ file(GLOB SOURCE_LIST CONFIGURE_DEPENDS
 # Make sure CATCH_CONFIG_MAIN is only defined in one test file.
 add_executable(test-nlnum ${SOURCE_LIST})
 
-# We're using C++17 in the test
-target_compile_features(test-nlnum PRIVATE cxx_std_17)
-
 # Should be linked to the main library, as well as the Catch2 testing library
 target_link_libraries(test-nlnum PRIVATE nlnum-lib catch2 pybind11 lrcalc)
 
