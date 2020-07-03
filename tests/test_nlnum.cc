@@ -2,10 +2,11 @@
 
 #define CATCH_CONFIG_MAIN
 
+#include <exception>
 #include <iostream>
+#include <numeric>
 
 #include <catch2/catch.hpp>
-#include <exception>
 
 extern "C" {
 #include <lrcalc/vector.h>
@@ -84,9 +85,17 @@ TEST_CASE("Newell-Littlewood number", "[nlcoef]") {
 }
 
 TEST_CASE("Partitions In", "[partitions-in]") {
-  nlnum::PartitionsIn pi({24, 12, 12}, 24);
+  const nlnum::Partition limit = {24, 12, 12};
+  const size_t size = 24;
+  nlnum::PartitionsIn pi(limit, size);
+
   int sum = 0;
   for (const nlnum::Partition& partition : pi) {
+    REQUIRE(std::accumulate(partition.begin(), partition.end(), 0) == size);
+    REQUIRE(partition.size() <= limit.size());
+    for (size_t i = 0; i < partition.size(); ++i) {
+      REQUIRE(partition[i] <= limit[i]);
+    }
     ++sum;
   }
   REQUIRE(sum == 61);
