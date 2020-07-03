@@ -1,5 +1,6 @@
 // Copyright 2020 ICLUE @ UIUC. All rights reserved.
 
+#include <cstdint>
 #include <vector>
 
 #include <pybind11/pybind11.h>
@@ -79,6 +80,13 @@ PYBIND11_MODULE(nlnum, m) {
         python: lrcoef([2,1,1,1,1], [2,1], [2,1])
         0
   )pbdoc");
+
+  py::class_<nlnum::PartitionsIn>(m, "PartitionsIn")
+      .def(py::init<const nlnum::Partition&, const size_t>())
+      // Keep this class alive while the returned iterator is alive.
+      .def("__iter__", [](nlnum::PartitionsIn& p) {
+        return py::make_iterator(p.begin(), p.end());
+      }, py::keep_alive<0, 1>());
 
   #ifdef VERSION_INFO
   m.attr("__version__") = VERSION_INFO;

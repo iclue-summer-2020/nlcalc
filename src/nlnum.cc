@@ -196,6 +196,7 @@ bool NeedsComputation(const Partition& mu, const Partition& nu,
   }
 
   // Lemma 2.2 (ii).
+  // TODO: permutation invariant, so add other permutations as well.
   if (sm + sn == sl) {
     *nl = lrcoef(lambda, mu, nu);
     return false;

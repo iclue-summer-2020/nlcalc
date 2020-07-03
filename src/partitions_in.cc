@@ -108,6 +108,11 @@ bool PartitionsIn::const_iterator::operator!=(
   return !done_ || !rhs.done_;
 }
 
+bool PartitionsIn::const_iterator::operator==(
+const nlnum::PartitionsIn::const_iterator& rhs) const {
+  return !(*this != rhs);
+}
+
 // Computes the intersection of two partitions.
 const Partition Intersection(const Partition& a, const Partition& b) {
   const size_t n = std::min(a.size(), b.size());

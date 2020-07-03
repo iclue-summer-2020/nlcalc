@@ -53,18 +53,16 @@ class CMakeBuild(build_ext):
             build_args += ['--', '-j2']
 
         env = os.environ.copy()
-        env['OMP_CANCELLATION'] = 'true'
         env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),
                                                               self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        print(subprocess.check_call(['printenv'], cwd=self.build_temp, env=env))
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp)
         subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp, env=env)
 
 setup(
     name='nlnum',
-    version='1.0.1',
+    version='1.1.0',
     author='ICLUE @ UIUC',
     author_email='',
     description='A library to compute Littlewood-Richardson coefficients and Newell-Littlewood numbers',

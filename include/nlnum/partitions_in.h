@@ -21,6 +21,7 @@ class PartitionsIn {
     const_iterator& operator++();
     const Partition& operator*() const;
     bool operator!=(const const_iterator&) const;
+    bool operator==(const const_iterator&) const;
 
    private:
     struct var {
