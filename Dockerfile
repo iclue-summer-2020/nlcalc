@@ -14,7 +14,8 @@ RUN apt-get -y update    \
  && python3 -m pip install --upgrade pip \
  && python3 -m pip install   \
       cmake==3.17.3          \
-      setuptools==46.4.0
+      setuptools==46.4.0     \
+      twine==3.1.1
 
 COPY . .
 
