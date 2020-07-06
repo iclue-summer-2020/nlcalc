@@ -10,6 +10,8 @@ namespace nlnum {
 
 typedef std::vector<int> Partition;
 
+void ValidatePartitions(const std::vector<Partition>& partitions);
+
 // Iterates through each partition contained within a given partition `limit`.
 class PartitionsIn {
  public:

@@ -8,6 +8,27 @@
 
 namespace nlnum {
 
+// Make sure partitions are weakly decreasing and only positive parts.
+void ValidatePartitions(const std::vector<Partition>& partitions) {
+  for (const Partition& partition : partitions) {
+    int last = INT_MAX;
+    for (const int part : partition) {
+      if (part < 0) {
+        throw std::invalid_argument(
+            "The parts of each partition must be non-negative.");
+      }
+      if (last < part) {
+        throw std::invalid_argument(
+            "Each partition must be strictly decreasing.");
+      }
+
+      last = part;
+    }
+  }
+}
+
+// The variable `limit` does not actually need to be a partition and won't
+// be checked for such.
 PartitionsIn::PartitionsIn(const Partition& limit, const size_t size)
     : size_{size}, limit_{limit} {}
 
@@ -16,13 +37,17 @@ PartitionsIn::const_iterator PartitionsIn::begin() const {
 }
 
 PartitionsIn::const_iterator PartitionsIn::end() const {
-  const Partition p;
-  return const_iterator{p, 0};
+  return const_iterator{{}, 0};
 }
 
 PartitionsIn::const_iterator::const_iterator(const Partition& limit,
                                              const size_t size)
     : limit_{limit}, size_{size}, done_{false} {
+  if (limit.empty()) {
+    done_ = true;
+    return;
+  }
+
   // Keep track of suffix sums.
   for (auto it = limit_.rbegin(); it != limit_.rend(); ++it) {
     const int last = !rsums_.empty() ? rsums_.back() : 0;
@@ -54,6 +79,16 @@ bool PartitionsIn::const_iterator::GoBack(var* v) {
 // For more info, see the following Python code:
 // https://github.com/iclue-summer-2020/Newell-Littlewood-Coefficient/blob/david/partitionsin.py
 bool PartitionsIn::const_iterator::Next() {
+  // Handle the edge case where the size is zero. This is valid.
+  if (size_ == 0) {
+    if (call_stack_.empty()) return false;
+    ret_parts_ = {0};
+    var* v = call_stack_.back();
+    call_stack_.pop_back();
+    delete v;
+    return true;
+  }
+
   while (!call_stack_.empty()) {
     var* v = call_stack_.back();
     call_stack_.pop_back();

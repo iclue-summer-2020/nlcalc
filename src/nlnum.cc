@@ -21,25 +21,6 @@ extern "C" {
 
 namespace nlnum {
 
-// Make sure partitions are weakly decreasing and only positive parts.
-void ValidatePartitions(const std::vector<Partition>& partitions) {
-  for (const Partition& partition : partitions) {
-    int last = INT_MAX;
-    for (const int part : partition) {
-      if (part <= 0) {
-        throw std::invalid_argument(
-            "The parts of each partition must be positive.");
-      }
-      if (last < part) {
-        throw std::invalid_argument(
-            "Each partition must be strictly decreasing.");
-      }
-
-      last = part;
-    }
-  }
-}
-
 vector* to_vector(const Partition& vec) {
   vector* v = v_new(static_cast<int>(vec.size()));
   for (size_t i = 0; i < vec.size(); ++i) {
@@ -189,8 +170,8 @@ bool NeedsComputation(const Partition& mu, const Partition& nu,
     return false;
   }
 
-  // Lemma 2.2 (iii) + some common knowledge.
-  if (sl + sm <= sn || sm + sn <= sl || sl + sn <= sm) {
+  // Lemma 2.2 (iii).
+  if (sl + sm < sn || sm + sn < sl || sl + sn < sm) {
     *nl = 0;
     return false;
   }
@@ -238,7 +219,10 @@ int64_t nlcoef(const Partition& mu, const Partition& nu,
   std::vector<Partition> va;
   std::vector<Partition> vb;
   std::vector<Partition> vc;
-  if (!NeedsComputation(mu, nu, lambda, &nl, &va, &vb, &vc)) return nl;
+
+  if (!NeedsComputation(mu, nu, lambda, &nl, &va, &vb, &vc)) {
+    return check_positivity ? static_cast<int64_t>(nl > 0) : nl;
+  }
 
   bool is_positive = false;
   nl = 0;

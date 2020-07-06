@@ -44,7 +44,7 @@ TEST_CASE("Littlewood-Richardson coefficient", "[lrcoef]") {
 TEST_CASE("Newell-Littlewood number Slow", "[nlcoef_slow]") {
   SECTION("Test 1") {
     const int64_t nl = nlnum::nlcoef_slow({2, 1}, {2, 1}, {4, 2});
-    REQUIRE(nl == 0);
+    REQUIRE(nl == 1);
   }
   SECTION("Test 2") {
     const int64_t nl = nlnum::nlcoef_slow({8, 4, 4}, {8, 4, 4}, {8, 4, 4});
@@ -53,9 +53,18 @@ TEST_CASE("Newell-Littlewood number Slow", "[nlcoef_slow]") {
 }
 
 TEST_CASE("Newell-Littlewood number", "[nlcoef]") {
+  SECTION("Test 0") {
+    const int64_t nl = nlnum::nlcoef({1}, {1}, {1});
+    // The total sum is odd.
+    REQUIRE(nl == 0);
+  }
   SECTION("Test 1") {
     const int64_t nl = nlnum::nlcoef({2, 1}, {2, 1}, {4, 2});
-    REQUIRE(nl == 0);
+    REQUIRE(nl == 1);
+  }
+  SECTION("Test 1a") {
+    const int64_t nl = nlnum::nlcoef({1, 1}, {1}, {1});
+    REQUIRE(nl == 1);
   }
   SECTION("Test 2") {
     const int64_t nl = nlnum::nlcoef({8, 4, 4}, {8, 4, 4}, {8, 4, 4});
@@ -85,36 +94,58 @@ TEST_CASE("Newell-Littlewood number", "[nlcoef]") {
 }
 
 TEST_CASE("Partitions In", "[partitions-in]") {
-  const nlnum::Partition limit = {24, 12, 12};
-  const size_t size = 24;
-  nlnum::PartitionsIn pi(limit, size);
+  SECTION("Normal") {
+    const nlnum::Partition limit = {24, 12, 12};
+    const size_t size = 24;
+    nlnum::PartitionsIn pi(limit, size);
 
-  int sum = 0;
-  for (const nlnum::Partition& partition : pi) {
-    REQUIRE(std::accumulate(partition.begin(), partition.end(), 0) == size);
-    REQUIRE(partition.size() <= limit.size());
-    for (size_t i = 0; i < partition.size(); ++i) {
-      REQUIRE(partition[i] <= limit[i]);
+    int sum = 0;
+    for (const nlnum::Partition& partition : pi) {
+      REQUIRE(std::accumulate(partition.begin(), partition.end(), 0) == size);
+      REQUIRE(partition.size() <= limit.size());
+      for (size_t i = 0; i < partition.size(); ++i) {
+        REQUIRE(partition[i] <= limit[i]);
+      }
+      ++sum;
     }
-    ++sum;
+    REQUIRE(sum == 61);
   }
-  REQUIRE(sum == 61);
+  SECTION("Zero") {
+    const nlnum::Partition& zero = {0};
+    const nlnum::PartitionsIn pi({2}, 0);
+
+    size_t sum = 0;
+    // Iterator loop written explicitly.
+    for (auto it = pi.begin(); it != pi.end(); ++it) {
+      const nlnum::Partition& partition = *it;
+      REQUIRE(partition == zero);
+      ++sum;
+    }
+    REQUIRE(sum == 1);
+  }
 }
 
 TEST_CASE("Test bad partitions.", "[bad-partitions]") {
+  SECTION("Test 0") {
+    REQUIRE_NOTHROW(nlnum::ValidatePartitions(
+        {{}, {0}, {1, 0}, {1, 1}, {0, 0}, {3, 2, 1}}));
+  }
+  SECTION("Test 0a") {
+    REQUIRE_THROWS_AS(nlnum::ValidatePartitions({{-1}}), std::invalid_argument);
+  }
   SECTION("Test 1") {
-    CHECK_THROWS_AS(nlnum::nlcoef({2, 1, 2}, {2, 1}, {4, 2}),
-                    std::invalid_argument);
+    REQUIRE_THROWS_AS(nlnum::nlcoef({2, 1, 2}, {2, 1}, {4, 2}),
+                      std::invalid_argument);
   }
   SECTION("Test 2") {
-    CHECK_THROWS_AS(nlnum::nlcoef({2, 1, 0}, {2, 1}, {4, 2}),
-                    std::invalid_argument);
+    REQUIRE_THROWS_AS(nlnum::nlcoef({2, 1, -1}, {2, 1}, {4, 2}),
+                      std::invalid_argument);
   }
 }
 
 TEST_CASE("Test positivity.", "[bad-partitions]") {
   SECTION("Test 1") {
-    const int64_t positive = nlnum::nlcoef({2, 1}, {2, 1}, {4, 2}, true);
+    const int64_t positive = nlnum::nlcoef({1}, {1}, {1}, true);
     REQUIRE(positive == 0);
   }
   SECTION("Test 2") {
@@ -124,5 +155,9 @@ TEST_CASE("Test positivity.", "[bad-partitions]") {
   SECTION("Test 3") {
     const int64_t nl = nlnum::nlcoef({8, 4, 4}, {8, 4, 4}, {8, 4, 4}, false);
     REQUIRE(nl == 141);
+  }
+  SECTION("Test 4") {
+    const int64_t positive = nlnum::nlcoef({2}, {2}, {2}, true);
+    REQUIRE(positive == 1);
   }
 }
