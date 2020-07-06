@@ -15,14 +15,18 @@ extern "C" {
 }
 
 namespace nlnum {
+
+typedef std::map<Partition, int64_t> Coefficients;
+
 // Converts a C++ vector into a C vector defined by lrcalc.
 vector* to_vector(const Partition&);
 
 // Converts a C vector defined by lrcalc into a C++ vector.
 bool to_cppvec(const vector*, Partition*);
 
-// Converts a C hashtable defined by lrcalc to a C++ map.
-bool to_map(hashtab*, std::map<Partition, int>*);
+// Converts a C hashtable defined by lrcalc to a C++ map
+// (of resulting coefficients).
+bool to_map(hashtab*, Coefficients*);
 
 // Computes the Littlewood-Richardson coefficient.
 int64_t lrcoef(const Partition& outer, const Partition& inner1,
@@ -41,6 +45,16 @@ int64_t nlcoef(const Partition& mu, const Partition& nu,
 // if only positivity is needed.
 int64_t nlcoef(const Partition& mu, const Partition& nu,
                const Partition& lambda, const bool check_positivity);
+
+// Computes the skew-Schur polynomial of the given skew-shape.
+Coefficients skew(const Partition& outer, const Partition& inner);
+
+// Computes the skew-Schur polynomial of the given skew-shape.
+// If max_rows is positive, then only partitions with at most
+// `max_rows` number of rows are included in the result.
+Coefficients skew(const Partition& outer, const Partition& inner,
+                  const size_t max_rows);
+
 }  // namespace nlnum
 
 #endif  // NLNUM_NLNUM_H_

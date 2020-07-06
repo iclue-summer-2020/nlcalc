@@ -63,8 +63,6 @@ int64_t lrcoef(const Partition& outer, const Partition& inner1,
 // Evaluates one term in the sum.
 int64_t nlcoef_slow_helper(const Partition& alpha, const Partition& mu,
                            const Partition& nu, const Partition& lambda) {
-  int64_t nl_im = 0;
-
   vector* aa = to_vector(alpha);
   vector* mm = to_vector(mu);
   vector* nn = to_vector(nu);
@@ -74,17 +72,18 @@ int64_t nlcoef_slow_helper(const Partition& alpha, const Partition& mu,
   v_free(mm);
   v_free(nn);
 
-  std::map<Partition, int> ss1, ss2;
+  Coefficients ss1, ss2;
   to_map(s1, &ss1);
   to_map(s2, &ss2);
   hash_free(s1);
   hash_free(s2);
 
+  int64_t nl_im = 0;
   for (const auto& p1 : ss1) {
     for (const auto& p2 : ss2) {
       // These are the 2 LR coefficients.
-      const int c1 = p1.second;
-      const int c2 = p2.second;
+      const auto c1 = p1.second;
+      const auto c2 = p2.second;
 
       vector* v1 = to_vector(p1.first);
       vector* v2 = to_vector(p2.first);
@@ -92,12 +91,12 @@ int64_t nlcoef_slow_helper(const Partition& alpha, const Partition& mu,
       v_free(v1);
       v_free(v2);
 
-      std::map<Partition, int> ss;
+      Coefficients ss;
       to_map(ht, &ss);
       hash_free(ht);
 
       if (ss.find(lambda) != ss.end()) {
-        const int c3 = ss[lambda];
+        const auto c3 = ss[lambda];
         nl_im += c1 * c2 * c3;
       }
     }
@@ -131,7 +130,7 @@ int64_t nlcoef_slow(const Partition& mu, const Partition& nu,
   return nl;
 }
 
-bool to_map(hashtab* ht, std::map<Partition, int>* m) {
+bool to_map(hashtab* ht, Coefficients* m) {
   if (ht == nullptr || m == nullptr) return false;
   m->clear();
 
@@ -266,6 +265,28 @@ int64_t nlcoef(const Partition& mu, const Partition& nu,
   }
 
   return check_positivity ? static_cast<int64_t>(is_positive) : nl;
+}
+
+Coefficients skew(const Partition& outer, const Partition& inner) {
+  return skew(outer, inner, 0);
+}
+
+Coefficients skew(const Partition& outer, const Partition& inner,
+                  const size_t max_rows) {
+  ValidatePartitions({outer, inner});
+
+  vector* v1 = to_vector(outer);
+  vector* v2 = to_vector(inner);
+  hashtab* ht = skew(v1, v2, static_cast<int>(max_rows));
+
+  Coefficients coefficients;
+  to_map(ht, &coefficients);
+
+  v_free(v1);
+  v_free(v2);
+  hash_free(ht);
+
+  return coefficients;
 }
 
 }  // namespace nlnum

@@ -33,13 +33,32 @@ PYBIND11_MODULE(nlnum, m) {
         0
   )pbdoc");
 
+  m.def("skew",
+        py::overload_cast<const nlnum::Partition&, const nlnum::Partition&,
+                          const size_t>(&nlnum::skew),
+        R"pbdoc(
+    Compute the Schur expansion of a skew Schur function.
+
+    Return a linear combination of partitions representing the Schur
+    function of the skew Young diagram ``outer / inner``, consisting
+    of boxes in the partition ``outer`` that are not in ``inner``.
+    INPUT:
+    - ``outer`` -- a partition.
+    - ``inner`` -- a partition.
+    - ``maxrows`` -- an integer or None.
+    If ``maxrows`` is specified, then only partitions with at most
+    this number of rows are included in the result.
+    EXAMPLES::
+        sage: from sage.libs.lrcalc.lrcalc import skew  #optional - lrcalc
+        sage: sorted(skew([2,1],[1]).items())           #optional - lrcalc
+        [([1, 1], 1), ([2], 1)]
+    )pbdoc",
+        py::arg("outer"), py::arg("inner"), py::arg("max_rows") = 0);
+
   m.def(
       "nlcoef",
-      py::overload_cast<
-          const std::vector<int>&,
-          const std::vector<int>&,
-          const std::vector<int>&,
-          const bool>(&nlnum::nlcoef),
+      py::overload_cast<const nlnum::Partition&, const nlnum::Partition&,
+                          const nlnum::Partition&, const bool>(&nlnum::nlcoef),
         R"pbdoc(
     Compute a single Newell-Littlewood coefficient using the definition (1.1).
     INPUT:

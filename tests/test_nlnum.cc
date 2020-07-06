@@ -161,3 +161,26 @@ TEST_CASE("Test positivity.", "[bad-partitions]") {
     REQUIRE(positive == 1);
   }
 }
+
+TEST_CASE("Skew-Schur Polynomials", "[skew]") {
+  SECTION("Simple example") {
+    /* Let outer = (2, 1) and inner = (1). Then the semi-standard tableaux of
+     * this skew shape in 2 variables are:
+     *
+     *     | . 1 | . 2 | . 2 | . 1 |
+     *     | 2   | 2   | 1   | 1   |
+     *
+     * So the resulting skew-Schur polynomial in 2 variables is:
+     *
+     *     S[x1,x2] = x1*x_2 + x2^2 + x1*x2 + x1^2 = x1^2 + x2^2 + 2*x1*x2.
+     *
+     * It is a fact that each skew-Schur polynomial can be decomposed into a
+     * linear combination of Schur polynomials. So in this case, S[x1,x2] is
+     * just the addition of the Schur polynomials of (1, 1) and (2).
+     */
+    const nlnum::Coefficients result = nlnum::skew({2, 1}, {1});
+    const nlnum::Coefficients expected = {{{1, 1}, 1}, {{2}, 1}};
+
+    REQUIRE(result == expected);
+  }
+}
