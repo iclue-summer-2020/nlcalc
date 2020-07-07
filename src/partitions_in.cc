@@ -15,7 +15,7 @@ void ValidatePartitions(const std::vector<Partition>& partitions) {
     for (const auto part : partition) {
       if (last < part) {
         throw std::invalid_argument(
-            "Each partition must be strictly decreasing.");
+            "Each partition must be weakly decreasing.");
       }
 
       last = part;
