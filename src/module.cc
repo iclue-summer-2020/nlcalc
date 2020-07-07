@@ -34,8 +34,21 @@ PYBIND11_MODULE(nlnum, m) {
   )pbdoc");
 
   m.def("skew",
-        py::overload_cast<const nlnum::Partition&, const nlnum::Partition&,
-                          const size_t>(&nlnum::skew),
+        [](const nlnum::Partition& outer, const nlnum::Partition& inner,
+           const size_t max_rows) {
+          const auto coefficients = nlnum::skew(outer, inner, max_rows);
+
+          // Python lists are not hashable, so since std::vectors are implicitly
+          // cast to Python lists, we need to instead explicitly cast them to
+          // Python tuples.
+          py::dict d;
+          for (const auto& e : coefficients) {
+            const py::tuple tuple = py::cast(e.first);
+            d[tuple] = e.second;
+          }
+
+          return d;
+        },
         R"pbdoc(
     Compute the Schur expansion of a skew Schur function.
 
