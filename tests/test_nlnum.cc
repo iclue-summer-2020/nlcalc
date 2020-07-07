@@ -15,12 +15,12 @@ extern "C" {
 #include <nlnum/partitions_in.h>
 
 TEST_CASE("Create a vector from an iterable", "[iterable_to_vector]") {
-  const std::vector<int> vec = {1, 2, 3, 4};
+  const std::vector<nlnum::NonNegInt> vec = {1, 2, 3, 4};
   vector* v = nlnum::to_vector(vec);
 
   REQUIRE(v->length == 4);
   for (size_t i = 0; i < v->length; i++) {
-    REQUIRE(v->array[i] == vec[i]);
+    REQUIRE(static_cast<nlnum::NonNegInt>(v->array[i]) == vec[i]);
   }
 
   v_free(v);
@@ -101,7 +101,7 @@ TEST_CASE("Partitions In", "[partitions-in]") {
 
     int sum = 0;
     for (const nlnum::Partition& partition : pi) {
-      REQUIRE(std::accumulate(partition.begin(), partition.end(), 0) == size);
+      REQUIRE(std::accumulate(partition.begin(), partition.end(), 0ul) == size);
       REQUIRE(partition.size() <= limit.size());
       for (size_t i = 0; i < partition.size(); ++i) {
         REQUIRE(partition[i] <= limit[i]);
@@ -131,14 +131,11 @@ TEST_CASE("Test bad partitions.", "[bad-partitions]") {
         {{}, {0}, {1, 0}, {1, 1}, {0, 0}, {3, 2, 1}}));
   }
   SECTION("Test 0a") {
-    REQUIRE_THROWS_AS(nlnum::ValidatePartitions({{-1}}), std::invalid_argument);
+    REQUIRE_THROWS_AS(nlnum::ValidatePartitions({{2, 1, 0, 1, 2}}),
+                      std::invalid_argument);
   }
   SECTION("Test 1") {
     REQUIRE_THROWS_AS(nlnum::nlcoef({2, 1, 2}, {2, 1}, {4, 2}),
-                      std::invalid_argument);
-  }
-  SECTION("Test 2") {
-    REQUIRE_THROWS_AS(nlnum::nlcoef({2, 1, -1}, {2, 1}, {4, 2}),
                       std::invalid_argument);
   }
 }

@@ -44,7 +44,7 @@ int64_t nlcoef(const Partition& mu, const Partition& nu,
 // depending if the NL number is positive or not. This will save time
 // if only positivity is needed.
 int64_t nlcoef(const Partition& mu, const Partition& nu,
-               const Partition& lambda, const bool check_positivity);
+               const Partition& lambda, bool check_positivity);
 
 // Computes the skew-Schur polynomial of the given skew-shape.
 Coefficients skew(const Partition& outer, const Partition& inner);
@@ -53,7 +53,7 @@ Coefficients skew(const Partition& outer, const Partition& inner);
 // If max_rows is positive, then only partitions with at most
 // `max_rows` number of rows are included in the result.
 Coefficients skew(const Partition& outer, const Partition& inner,
-                  const size_t max_rows);
+                  size_t max_rows);
 
 }  // namespace nlnum
 

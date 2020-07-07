@@ -11,12 +11,8 @@ namespace nlnum {
 // Make sure partitions are weakly decreasing and only positive parts.
 void ValidatePartitions(const std::vector<Partition>& partitions) {
   for (const Partition& partition : partitions) {
-    int last = INT_MAX;
-    for (const int part : partition) {
-      if (part < 0) {
-        throw std::invalid_argument(
-            "The parts of each partition must be non-negative.");
-      }
+    NonNegInt last = UINT64_MAX;
+    for (const auto part : partition) {
       if (last < part) {
         throw std::invalid_argument(
             "Each partition must be strictly decreasing.");
@@ -50,12 +46,13 @@ PartitionsIn::const_iterator::const_iterator(const Partition& limit,
 
   // Keep track of suffix sums.
   for (auto it = limit_.rbegin(); it != limit_.rend(); ++it) {
-    const int last = !rsums_.empty() ? rsums_.back() : 0;
+    const NonNegInt last = !rsums_.empty() ? rsums_.back() : 0;
     rsums_.push_back(last + *it);
   }
   std::reverse(rsums_.begin(), rsums_.end());
 
-  call_stack_.push_back(new var{0, static_cast<int>(size_), 1, -1, nullptr});
+  call_stack_.push_back(
+      new var{0, static_cast<int64_t>(size_), 1, -1, nullptr});
 
   ++(*this);
 }
@@ -93,22 +90,23 @@ bool PartitionsIn::const_iterator::Next() {
     var* v = call_stack_.back();
     call_stack_.pop_back();
 
-    const int left =
-        static_cast<int>(limit_.size()) - static_cast<int>(parts_.size());
+    const int64_t left = static_cast<int64_t>(limit_.size()) -
+                         static_cast<int64_t>(parts_.size());
 
     if (v->rem == 0 && parts_.size() <= limit_.size()) {
       ret_parts_ = parts_;
       if (!GoBack(v)) break;
       return true;
     } else if (v->rem < 0 || v->level >= limit_.size() ||
-               rsums_[v->level] < v->rem ||
-               (!parts_.empty() && parts_.back() * left < v->rem)) {
+               static_cast<int64_t>(rsums_[v->level]) < v->rem ||
+               (!parts_.empty() &&
+                static_cast<int64_t>(parts_.back()) * left < v->rem)) {
       if (!GoBack(v)) break;
     } else if (v->mx == -1) {
-      const int max_part = std::min(
-          v->rem, std::min(limit_[v->level], !parts_.empty()
-                                                 ? parts_.back()
-                                                 : static_cast<int>(size_)));
+      const auto max_part = std::min(
+          v->rem,
+          static_cast<int64_t>(std::min(
+              limit_[v->level], !parts_.empty() ? parts_.back() : size_)));
       v->mx = max_part;
       if (v->mn <= v->mx) {
         parts_.push_back(1);
@@ -117,7 +115,7 @@ bool PartitionsIn::const_iterator::Next() {
         break;
       }
     } else if (v->mn <= v->mx) {
-      parts_.push_back(v->mn);
+      parts_.push_back(static_cast<NonNegInt>(v->mn));
       call_stack_.push_back(new var{v->level + 1, v->rem - v->mn, 1, -1, v});
     } else if (!GoBack(v)) {
       break;

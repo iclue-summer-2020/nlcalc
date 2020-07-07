@@ -22,9 +22,9 @@ extern "C" {
 namespace nlnum {
 
 vector* to_vector(const Partition& vec) {
-  vector* v = v_new(static_cast<int>(vec.size()));
+  vector* v = v_new(static_cast<int32_t>(vec.size()));
   for (size_t i = 0; i < vec.size(); ++i) {
-    v->array[i] = vec[i];
+    v->array[i] = static_cast<int32_t>(vec[i]);
   }
   return v;
 }
@@ -37,7 +37,8 @@ bool to_cppvec(const vector* v, Partition* vec) {
   vec->reserve(n);
 
   for (size_t i = 0; i < v->length; ++i) {
-    vec->push_back(v->array[i]);
+    // We know that everything we are working with will be non-negative.
+    vec->push_back(static_cast<NonNegInt>(v->array[i]));
   }
 
   return true;
@@ -105,10 +106,9 @@ int64_t nlcoef_slow_helper(const Partition& alpha, const Partition& mu,
   return nl_im;
 }
 
-// Returns the sum if it is greater than zero, else returns zero.
-size_t ZSum(const Partition& parts) {
-  return static_cast<size_t>(
-      std::max(0, std::accumulate(parts.begin(), parts.end(), 0)));
+NonNegInt Sum(const Partition& parts) {
+  return static_cast<NonNegInt>(
+      std::accumulate(parts.begin(), parts.end(), 0ul));
 }
 
 int64_t nlcoef_slow(const Partition& mu, const Partition& nu,
@@ -118,7 +118,7 @@ int64_t nlcoef_slow(const Partition& mu, const Partition& nu,
   int64_t nl = 0;
   // Step 1: Compute the intersection of mu and nu.
   const Partition limit = Intersection(mu, nu);
-  const size_t slimit = ZSum(limit);
+  const size_t slimit = Sum(limit);
 
   // Step 2: Iterate through each partition in the intersection.
   for (size_t size = 0; size <= slimit; ++size) {
@@ -140,7 +140,7 @@ bool to_map(hashtab* ht, Coefficients* m) {
     const vector* v = static_cast<vector*>(hash_key(itr));
     Partition p;
     to_cppvec(v, &p);
-    const int c = hash_intvalue(itr);
+    const int32_t c = hash_intvalue(itr);
     m->insert({p, c});
     hash_next(itr);
   }
@@ -159,9 +159,9 @@ bool NeedsComputation(const Partition& mu, const Partition& nu,
   const Partition int_ml = Intersection(mu, lambda);
   const Partition int_nl = Intersection(nu, lambda);
 
-  const size_t sl = ZSum(lambda);
-  const size_t sm = ZSum(mu);
-  const size_t sn = ZSum(nu);
+  const size_t sl = Sum(lambda);
+  const size_t sm = Sum(mu);
+  const size_t sn = Sum(nu);
 
   // Lemma 2.2 (v).
   if ((sl + sm + sn) % 2 == 1) {
@@ -277,7 +277,7 @@ Coefficients skew(const Partition& outer, const Partition& inner,
 
   vector* v1 = to_vector(outer);
   vector* v2 = to_vector(inner);
-  hashtab* ht = skew(v1, v2, static_cast<int>(max_rows));
+  hashtab* ht = skew(v1, v2, static_cast<int32_t>(max_rows));
 
   Coefficients coefficients;
   to_map(ht, &coefficients);

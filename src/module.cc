@@ -71,7 +71,7 @@ PYBIND11_MODULE(nlnum, m) {
   m.def(
       "nlcoef",
       py::overload_cast<const nlnum::Partition&, const nlnum::Partition&,
-                          const nlnum::Partition&, const bool>(&nlnum::nlcoef),
+                          const nlnum::Partition&, bool>(&nlnum::nlcoef),
         R"pbdoc(
     Compute a single Newell-Littlewood coefficient using the definition (1.1).
     INPUT:
